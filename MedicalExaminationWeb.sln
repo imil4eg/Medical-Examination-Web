@@ -1,0 +1,55 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.421
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MedicalExaminationWeb", "MedicalExaminationWeb\MedicalExaminationWeb.csproj", "{979DABC8-058C-42D3-AF92-8C33CC8E6955}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MedicalExamination.Entities", "MedicalExamination.Entities\MedicalExamination.Entities.csproj", "{A06B8977-BC84-44A7-8B08-5707DBEE5F49}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MedicalExamination.DAL", "MedicalExamination.DAL\MedicalExamination.DAL.csproj", "{AEDFC001-08CC-4748-90B1-AB12A4D2D2BA}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MedicalExamination.BLL", "MedicalExamination.BLL\MedicalExamination.BLL.csproj", "{6DE2C31B-76C9-4D6F-94F1-5A761B9C8DBF}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleMapper", "SimpleMapper\SimpleMapper.csproj", "{529D3DDB-3AFA-4D91-B153-AC7B310E7106}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FileReader", "FileReader\FileReader.csproj", "{069CE4B7-4DA9-42A6-B394-1097F0C6DE8D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{979DABC8-058C-42D3-AF92-8C33CC8E6955}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{979DABC8-058C-42D3-AF92-8C33CC8E6955}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{979DABC8-058C-42D3-AF92-8C33CC8E6955}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{979DABC8-058C-42D3-AF92-8C33CC8E6955}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A06B8977-BC84-44A7-8B08-5707DBEE5F49}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A06B8977-BC84-44A7-8B08-5707DBEE5F49}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A06B8977-BC84-44A7-8B08-5707DBEE5F49}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A06B8977-BC84-44A7-8B08-5707DBEE5F49}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AEDFC001-08CC-4748-90B1-AB12A4D2D2BA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AEDFC001-08CC-4748-90B1-AB12A4D2D2BA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AEDFC001-08CC-4748-90B1-AB12A4D2D2BA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AEDFC001-08CC-4748-90B1-AB12A4D2D2BA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6DE2C31B-76C9-4D6F-94F1-5A761B9C8DBF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6DE2C31B-76C9-4D6F-94F1-5A761B9C8DBF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6DE2C31B-76C9-4D6F-94F1-5A761B9C8DBF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6DE2C31B-76C9-4D6F-94F1-5A761B9C8DBF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{529D3DDB-3AFA-4D91-B153-AC7B310E7106}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{529D3DDB-3AFA-4D91-B153-AC7B310E7106}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{529D3DDB-3AFA-4D91-B153-AC7B310E7106}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{529D3DDB-3AFA-4D91-B153-AC7B310E7106}.Release|Any CPU.Build.0 = Release|Any CPU
+		{069CE4B7-4DA9-42A6-B394-1097F0C6DE8D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{069CE4B7-4DA9-42A6-B394-1097F0C6DE8D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{069CE4B7-4DA9-42A6-B394-1097F0C6DE8D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{069CE4B7-4DA9-42A6-B394-1097F0C6DE8D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {F8563587-4B9F-41ED-88E9-7ACF54B18A4C}
+	EndGlobalSection
+EndGlobal
