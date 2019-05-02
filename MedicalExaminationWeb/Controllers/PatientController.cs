@@ -1,11 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using MedicalExamination.BLL;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MedicalExaminationWeb.Controllers
 {
-    [Route("/api/[controller]")]
-    public sealed class PatientController : ControllerBase
+    public sealed class PatientController : Controller
     {
         private readonly IPatientService _patientService;
 
@@ -15,11 +17,22 @@ namespace MedicalExaminationWeb.Controllers
         }
 
         [HttpGet]
-        public ActionResult GetPatients()
+        public IActionResult Patients()
         {
             var patients = _patientService.GetAllPatients();
 
-            return Ok(patients);
+            var patientModels = new List<PatientModel>();
+            foreach (var patient in patients)
+            {
+                var patientModel = new PatientModel();
+                patientModel = SimpleMapper.Mapper.Map<MedicalExamination.BLL.PatientModel, PatientModel>(patient);
+                patientModel.Person =
+                    SimpleMapper.Mapper.Map<MedicalExamination.BLL.PersonModel, PersonModel>(patient.Person);
+
+                patientModels.Add(patientModel);
+            }
+
+            return View(patientModels);
         }
 
         [HttpPost]

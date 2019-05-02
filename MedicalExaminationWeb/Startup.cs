@@ -65,7 +65,7 @@ namespace MedicalExaminationWeb
             {
                 routes.MapRoute(
                     name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
+                    template: "{controller=Authorization}/{action=Login}/{id?}");
             });
         }
     }

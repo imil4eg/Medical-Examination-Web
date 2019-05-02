@@ -19,7 +19,7 @@ namespace MedicalExaminationWeb
         public string MiddleName { get; set; }
 
         [DataMember(Name = "gender")]
-        public byte Gender { get; set; }
+        public Gender Gender { get; set; }
 
         [DataMember(Name = "birthdate")]
         public DateTime BirthDate { get; set; }

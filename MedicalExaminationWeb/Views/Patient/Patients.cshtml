@@ -1,0 +1,23 @@
+﻿@model IEnumerable<PatientModel>
+
+@{
+    ViewData["Title"] = "Patients";
+}
+
+<div class="container">
+    <div class="row">
+        <hr />
+        <table class="table">
+            @foreach (var patient in Model)
+            {
+                <tr>
+                    <td>@patient.Person.LastName</td>
+                    <td>@patient.Person.FirstName</td>
+                    <td>@patient.Person.MiddleName</td>
+                    <td>@patient.Person.Gender</td>
+                    <td>@patient.Person.BirthDate.Date.ToString("dd MMMM yyyy")</td>
+                </tr>
+            }
+        </table>
+    </div>
+</div>

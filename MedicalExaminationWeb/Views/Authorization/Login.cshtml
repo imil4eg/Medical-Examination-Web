@@ -4,27 +4,25 @@
     ViewData["Title"] = "Authorization";
 }
 
-<h2>Authorization</h2>
-
 <div class="container body-content">
     <div class="card card-container">
         <img class="profile-img-card" src="images/avatar.png" />
         <p id="profile-name" class="profile-name-card"></p>
-        @using (Html.BeginForm("Login", "Authorization", FormMethod.Post, new { @class = "form-signin"}))
-        {
+        <form name="authorization" asp-controller="Authorization" asp-action="Login" class="form-signin" method="post" onsubmit="return validateAuthorization()">
             @Html.AntiForgeryToken()
-
+            
+            @Html.ValidationSummary(true, "", new {@class = "text-danger"})
             <span class="reauth-email"></span>
             <hr />
             <div class="form-group">
-                @Html.TextBoxFor(m => m.UserName, new { @class = "form-control", placeholder = "Имя пользователя"})
-                @Html.ValidationMessageFor(m => m.UserName, "", new { @class = "text-danger"})
+                <input asp-for="UserName" type="text" class="form-control" placeholder="Имя пользователя" id="UserName"/>
+                <label id="loginError" class="text-danger" hidden="true"></label>
             </div>
             <div class="form-group">
-                @Html.TextBoxFor(m => m.Password, new { @class = "form-control", placeholder = "Пароль"})
-                @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger"})
+                <input asp-for="Password" type="password" class="form-control" placeholder="Пароль" id="Password"/>
+                <label id="passwordError" class="text-danger" hidden="true"></label>
             </div>
             <input type="submit" class="btn btn-lg btn-primary btn-block btn-signin" />
-        }
+        </form>
     </div>
 </div>

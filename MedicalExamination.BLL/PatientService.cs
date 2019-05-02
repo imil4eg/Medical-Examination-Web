@@ -1,5 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Linq;
 using MedicalExamination.DAL;
 using MedicalExamination.Entities;
 
@@ -16,9 +16,25 @@ namespace MedicalExamination.BLL
             _personRepository = personRepository;
         }
 
-        public IEnumerable<Patient> GetAllPatients()
+        public IEnumerable<PatientModel> GetAllPatients()
         {
-            return _patientRepository.GetAll();
+            var patients = _patientRepository.GetAll();
+
+            var allPatients = patients as Patient[] ?? patients.ToArray();
+
+            var patientModels = new List<PatientModel>();
+
+            foreach (var patient in allPatients)
+            {
+                var patientModel = SimpleMapper.Mapper.Map<Patient, PatientModel>(patient);
+                var person = _personRepository.GetById(patient.PersonId);
+                patientModel.Person =
+                    SimpleMapper.Mapper.Map<Person, PersonModel>(person);
+                
+                patientModels.Add(patientModel);
+            }
+
+            return patientModels;
         }
 
         public Patient GetPatient(int id)

@@ -27,6 +27,7 @@ namespace MedicalExaminationWeb.Controllers
         
         //[Route("~/api/login")]
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginModel model)
         {
             if (!ModelState.IsValid)
@@ -35,11 +36,19 @@ namespace MedicalExaminationWeb.Controllers
             ApplicationUser user = await _userManager.FindByNameAsync(model.UserName);
 
             if (user == null)
+            {
+                ModelState.AddModelError("", "Неверный логин или пароль.");
                 return View(model);
-            
+            }
 
-            var result = await _signInManager.PasswordSignInAsync(user, model.Password, false, false);
-            return Ok(result.Succeeded ?  new {success = true, error = string.Empty } : new {success = false, error = "Неверный логин или пароль."});
+            var result = await _signInManager.PasswordSignInAsync(user, model.Password, true, false);
+
+
+            if (result.Succeeded)
+                return RedirectToAction("Patients", "Patient");
+
+            ModelState.AddModelError("", "Неверный логин или пароль.");
+            return View(model);
         }
     }
 }
