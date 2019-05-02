@@ -58,6 +58,23 @@ namespace MedicalExaminationWeb.Controllers
             return Ok();
         }
 
+        [HttpGet]
+        public IActionResult CreatePatient()
+        {
+            var patientModel = new PatientModel();
+
+            return View(patientModel);
+        }
+
+        [HttpPost]
+        public IActionResult CreatePatient(PatientModel model)
+        {
+            if (!ModelState.IsValid)
+                return View(model);
+
+            return View();
+        }
+
         [HttpPut]
         [Route("update")]
         public ActionResult UpdatePatient([FromBody] PatientModel model)
