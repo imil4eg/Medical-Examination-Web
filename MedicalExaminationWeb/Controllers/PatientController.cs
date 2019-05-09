@@ -4,16 +4,20 @@ using System.Linq;
 using MedicalExamination.BLL;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using SimpleMapper;
 
 namespace MedicalExaminationWeb.Controllers
 {
     public sealed class PatientController : Controller
     {
         private readonly IPatientService _patientService;
+        private readonly IPassportIssuePlaceTypeService _passportIssuePlaceService;
 
-        public PatientController(IPatientService patientService)
+        public PatientController(IPatientService patientService, IPassportIssuePlaceTypeService passportIssuePlaceService)
         {
             _patientService = patientService;
+            _passportIssuePlaceService = passportIssuePlaceService;
         }
 
         [HttpGet]
@@ -61,12 +65,22 @@ namespace MedicalExaminationWeb.Controllers
         [HttpGet]
         public IActionResult CreatePatient()
         {
-            var patientModel = new PatientModel();
+            var patientModel = new PatientModel
+            {
+                Person = new PersonModel()
+            };
+
+            var passportIssuePlaceModels = _passportIssuePlaceService.GetAllPassportIssuePlaces()
+                .Map<MedicalExamination.BLL.PassportIssuePlaceModel, PassportIssuePlaceModel>().ToArray();
+
+            patientModel.Person.PassportIssuePlaces =
+                new SelectList(passportIssuePlaceModels, "Id", "Name", passportIssuePlaceModels[0].Id);
 
             return View(patientModel);
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult CreatePatient(PatientModel model)
         {
             if (!ModelState.IsValid)

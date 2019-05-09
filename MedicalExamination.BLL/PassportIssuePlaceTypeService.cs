@@ -1,10 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using MedicalExamination.DAL;
 using MedicalExamination.Entities;
 
 namespace MedicalExamination.BLL
 {
-    public sealed class PassportIssuePlaceTypeService : IPassportIssuePlaceType
+    public sealed class PassportIssuePlaceTypeService : IPassportIssuePlaceTypeService
     {
         private readonly IGenericRepository<PassportIssuePlaceType> _passportIssuePlaceTypeRepository;
 
@@ -13,29 +15,47 @@ namespace MedicalExamination.BLL
             _passportIssuePlaceTypeRepository = passportIssuePlaceTypeRepository;
         }
 
-        public IEnumerable<PassportIssuePlaceType> GetAllPassportIssuePlaceTypes()
+        public IEnumerable<PassportIssuePlaceModel> GetAllPassportIssuePlaces()
         {
-            return _passportIssuePlaceTypeRepository.GetAll();
+            var passportIssuePlaces = _passportIssuePlaceTypeRepository.GetAll();
+
+            return passportIssuePlaces.Select(passportIssuePlaceType =>
+                SimpleMapper.Mapper.Map<PassportIssuePlaceType, PassportIssuePlaceModel>(passportIssuePlaceType));
         }
 
-        public PassportIssuePlaceType GetPassportIssuePlaceType(int id)
+        public PassportIssuePlaceModel GetPassportIssuePlace(Guid id)
         {
-            return _passportIssuePlaceTypeRepository.GetById(id);
+            var passportIssuePlace = _passportIssuePlaceTypeRepository.GetById(id);
+
+            var passportIssuePlaceModel =
+                SimpleMapper.Mapper.Map<PassportIssuePlaceType, PassportIssuePlaceModel>(passportIssuePlace);
+
+            return passportIssuePlaceModel;
         }
 
-        public void CreatePassportIssuePlaceType(PassportIssuePlaceType passportIssuePlaceType)
+        public void CreatePassportIssuePlace(PassportIssuePlaceModel passportIssuePlaceModel)
         {
-            _passportIssuePlaceTypeRepository.Insert(passportIssuePlaceType);
+            var passportIssuePlace =
+                SimpleMapper.Mapper.Map<PassportIssuePlaceModel, PassportIssuePlaceType>(passportIssuePlaceModel);
+
+            _passportIssuePlaceTypeRepository.Insert(passportIssuePlace);
         }
 
-        public void UpdatePassportIssuePlaceType(PassportIssuePlaceType passportIssuePlaceType)
+        public void UpdatePassportIssuePlace(PassportIssuePlaceModel passportIssuePlaceModel)
         {
-            _passportIssuePlaceTypeRepository.Update(passportIssuePlaceType);
+            var passportIssuePlace =
+                SimpleMapper.Mapper.Map<PassportIssuePlaceModel, PassportIssuePlaceType>(passportIssuePlaceModel);
+
+
+            _passportIssuePlaceTypeRepository.Update(passportIssuePlace);
         }
 
-        public void DeletePassportIssuePlaceType(PassportIssuePlaceType passportIssuePlaceType)
+        public void DeletePassportIssuePlace(PassportIssuePlaceModel passportIssuePlaceModel)
         {
-            _passportIssuePlaceTypeRepository.Delete(passportIssuePlaceType);
+            var passportIssuePlace =
+                SimpleMapper.Mapper.Map<PassportIssuePlaceModel, PassportIssuePlaceType>(passportIssuePlaceModel);
+
+            _passportIssuePlaceTypeRepository.Delete(passportIssuePlace);
         }
     }
 }

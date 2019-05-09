@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using FileReader;
@@ -177,12 +178,35 @@ namespace MedicalExaminationWeb
                 return;
             }
 
-            var testPassportIssuePlaceType = new PassportIssuePlaceType
+            var passportIssuePlaces = new List<PassportIssuePlaceType>()
             {
-                Name = "Test"
+                new PassportIssuePlaceType
+                {
+                    Name = "Отделом УМФС по Республике Татарстан г. Казани Советского района"
+                },
+                new PassportIssuePlaceType
+                {
+                    Name = "Отделом УМФС по Республике Татарстан г. Казани Приволжского района"
+                },
+                new PassportIssuePlaceType
+                {
+                    Name = "Отделом УМФС по Республике Татарстан г. Казани Авиастроительного района"
+                },
+                new PassportIssuePlaceType
+                {
+                    Name = "Отделом УМФС по Республике Татарстан г. Казани Вахитовского района"
+                },
+                new PassportIssuePlaceType
+                {
+                    Name = "Отделом УМФС по Республике Татарстан г. Казани Московского района"
+                },
+                new PassportIssuePlaceType
+                {
+                    Name = "Отделом УМФС по Республике Татарстан г. Казани Ново-Савиноского района"
+                }
             };
 
-            _context.PassportIssuePlaceTypes.Add(testPassportIssuePlaceType);
+            _context.PassportIssuePlaceTypes.AddRange(passportIssuePlaces);
 
             _context.SaveChanges();
         }

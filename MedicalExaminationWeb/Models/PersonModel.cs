@@ -1,14 +1,12 @@
 ﻿using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using System.Runtime.Serialization;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace MedicalExaminationWeb
 {
-    [DataContract]
     public class PersonModel
     {
-        [DataMember(Name = "id")]
         public int Id { get; set; }
 
         [DisplayName("Фамилия")]
@@ -41,7 +39,8 @@ namespace MedicalExaminationWeb
         [Required(AllowEmptyStrings = false, ErrorMessage = "Это поле не может быть пустым.")]
         public DateTime PassportIssueDate { get; set; }
 
-        [DisplayName("Место выдачи")]
-        public Guid PassportIssuePlaceId { get; set; }
+        //[DisplayName("Место выдачи паспорта")]
+        public SelectList PassportIssuePlaces { get; set; }
+        public Guid SelectedPassportIssuePlaceId { get; set; }
     }
 }
