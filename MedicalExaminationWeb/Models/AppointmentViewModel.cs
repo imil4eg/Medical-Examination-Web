@@ -4,11 +4,16 @@ using MedicalExamination.Entities;
 
 namespace MedicalExaminationWeb
 {
-    public sealed class AppointmentModel
+    public sealed class AppointmentViewModel
     {
-        public WorkerModel Worker { get; set; }
+        public AppointmentViewModel()
+        {
+            this.EndDate = DateTime.Today;
+        }
 
-        public PatientModel Patient { get; set; }
+        public WorkerViewModel Worker { get; set; }
+
+        public PatientViewModel Patient { get; set; }
 
         public DiseaseOutcomeModel Outcome { get; set; }
 

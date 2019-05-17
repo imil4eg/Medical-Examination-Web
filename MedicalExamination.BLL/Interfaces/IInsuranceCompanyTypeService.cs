@@ -1,18 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
-using MedicalExamination.Entities;
 
 namespace MedicalExamination.BLL
 {
     /// <summary>
-    /// Interface for <see cref="InsuranceCompanyType"/> entity service implementation
+    /// Interface for <see cref="InsuranceCompanyModel"/> entity service implementation
     /// </summary>
     public interface IInsuranceCompanyTypeService
     {
-        IEnumerable<InsuranceCompanyType> GetAllInsuranceCompanyTypes();
-        InsuranceCompanyType GetInsuranceCompanyType(Guid id);
-        void CreateInsuranceCompanyType(InsuranceCompanyModel insuranceCompanyModel);
-        void UpdateInsuranceCompanyType(InsuranceCompanyModel insuranceCompanyModel);
-        void DeleteInsuranceCompanyType(InsuranceCompanyModel insuranceCompanyModel);
+        IEnumerable<InsuranceCompanyModel> GetAllInsuranceCompanies();
+        InsuranceCompanyModel GetInsuranceCompany(Guid id);
+        void CreateInsuranceCompany(InsuranceCompanyModel insuranceCompanyModel);
+        void UpdateInsuranceCompany(InsuranceCompanyModel insuranceCompanyModel);
+        void DeleteInsuranceCompany(InsuranceCompanyModel insuranceCompanyModel);
     }
 }

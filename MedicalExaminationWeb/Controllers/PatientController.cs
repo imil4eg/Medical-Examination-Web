@@ -13,11 +13,15 @@ namespace MedicalExaminationWeb.Controllers
     {
         private readonly IPatientService _patientService;
         private readonly IPassportIssuePlaceTypeService _passportIssuePlaceService;
+        private readonly IInsuranceCompanyTypeService _insuranceCompanyService;
 
-        public PatientController(IPatientService patientService, IPassportIssuePlaceTypeService passportIssuePlaceService)
+        public PatientController(IPatientService patientService,
+            IPassportIssuePlaceTypeService passportIssuePlaceService,
+            IInsuranceCompanyTypeService insuranceCompanyService)
         {
             _patientService = patientService;
             _passportIssuePlaceService = passportIssuePlaceService;
+            _insuranceCompanyService = insuranceCompanyService;
         }
 
         [HttpGet]
@@ -25,13 +29,13 @@ namespace MedicalExaminationWeb.Controllers
         {
             var patients = _patientService.GetAllPatients();
 
-            var patientModels = new List<PatientModel>();
+            var patientModels = new List<PatientViewModel>();
             foreach (var patient in patients)
             {
-                var patientModel = new PatientModel();
-                patientModel = SimpleMapper.Mapper.Map<MedicalExamination.BLL.PatientModel, PatientModel>(patient);
+                var patientModel = new PatientViewModel();
+                patientModel = SimpleMapper.Mapper.Map<MedicalExamination.BLL.PatientModel, PatientViewModel>(patient);
                 patientModel.Person =
-                    SimpleMapper.Mapper.Map<MedicalExamination.BLL.PersonModel, PersonModel>(patient.Person);
+                    SimpleMapper.Mapper.Map<MedicalExamination.BLL.PersonModel, PersonViewModel>(patient.Person);
 
                 patientModels.Add(patientModel);
             }
@@ -39,96 +43,93 @@ namespace MedicalExaminationWeb.Controllers
             return View(patientModels);
         }
 
-        [HttpPost]
-        [Route("getpatient")]
+        [HttpGet]
         public ActionResult GetPatient(int patientId)
         {
             var patient = _patientService.GetPatient(patientId);
 
-            return Ok(patient);
-        }
+            var patientModel = SimpleMapper.Mapper.Map<MedicalExamination.BLL.PatientModel, PatientViewModel>(patient);
 
-        [HttpPost]
-        [Route("insert")]
-        public ActionResult InsertPatient([FromBody] PatientModel model)
-        {
-            var patientModel = new MedicalExamination.BLL.PatientModel();
-            patientModel = SimpleMapper.Mapper.Map<PatientModel, MedicalExamination.BLL.PatientModel>(model);
-            patientModel.Person =
-                SimpleMapper.Mapper.Map<PersonModel, MedicalExamination.BLL.PersonModel>(model.Person);
+            patientModel.Person = SimpleMapper.Mapper.Map<PersonModel, PersonViewModel>(patient.Person);
 
-            _patientService.CreatePatient(patientModel);
+            this.FullFillSelectLists(patientModel);
 
-            return Ok();
+            patientModel.SelectedInsuranceCompanyId = patient.InsuranceCompanyId;
+            patientModel.Person.SelectedPassportIssuePlaceId = patient.Person.PassportIssuePlaceId;
+
+            return View("PatientProfile", patientModel);
         }
 
         [HttpGet]
         public IActionResult CreatePatient()
         {
-            var patientModel = new PatientModel
+            var patientModel = new PatientViewModel
             {
-                Person = new PersonModel()
+                Person = new PersonViewModel()
             };
 
-            var passportIssuePlaceModels = _passportIssuePlaceService.GetAllPassportIssuePlaces()
-                .Map<MedicalExamination.BLL.PassportIssuePlaceModel, PassportIssuePlaceModel>().ToArray();
-
-            patientModel.Person.PassportIssuePlaces =
-                new SelectList(passportIssuePlaceModels, "Id", "Name", passportIssuePlaceModels[0].Id);
+            this.FullFillSelectLists(patientModel);
 
             return View(patientModel);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult CreatePatient(PatientModel model)
+        public IActionResult CreatePatient(PatientViewModel model)
         {
             if (!ModelState.IsValid)
+            {
+                this.FullFillSelectLists(model);
+
                 return View(model);
+            }
 
-            return View();
+
+            var patientModel =
+                SimpleMapper.Mapper.Map<PatientViewModel, MedicalExamination.BLL.PatientModel>(model);
+            patientModel.InsuranceCompanyId = model.SelectedInsuranceCompanyId;
+            patientModel.Person =
+                SimpleMapper.Mapper.Map<PersonViewModel, MedicalExamination.BLL.PersonModel>(model.Person);
+            patientModel.Person.PassportIssuePlaceId = model.Person.SelectedPassportIssuePlaceId;
+
+            _patientService.CreatePatient(patientModel);
+
+            return RedirectToAction("Patients");
         }
 
-        [HttpPut]
-        [Route("update")]
-        public ActionResult UpdatePatient([FromBody] PatientModel model)
+        [HttpPost]
+        public ActionResult UpdatePatient(PatientViewModel model)
         {
-            try
+            if (!ModelState.IsValid)
             {
-                var patientModel = new MedicalExamination.BLL.PatientModel();
-                patientModel = SimpleMapper.Mapper.Map<PatientModel, MedicalExamination.BLL.PatientModel>(model);
-                patientModel.Person =
-                    SimpleMapper.Mapper.Map<PersonModel, MedicalExamination.BLL.PersonModel>(model.Person);
+                this.FullFillSelectLists(model);
 
-                _patientService.UpdatePatient(patientModel);
+                return View("PatientProfile", model);
+            }
 
-                return Ok();
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            var patientModel = SimpleMapper.Mapper.Map<PatientViewModel, MedicalExamination.BLL.PatientModel>(model);
+            patientModel.Person =
+                SimpleMapper.Mapper.Map<PersonViewModel, MedicalExamination.BLL.PersonModel>(model.Person);
+
+            _patientService.UpdatePatient(patientModel);
+
+            return RedirectToAction("Patients");
         }
 
-        [HttpDelete]
-        [Route("delete")]
-        public ActionResult DeletePatient([FromBody] PatientModel model)
+        [NonAction]
+        public void FullFillSelectLists(PatientViewModel patientModel)
         {
-            try
-            {
-                var patientModel = new MedicalExamination.BLL.PatientModel
-                {
-                    PersonId = model.PersonId
-                };
+            var passportIssuePlaceModels = _passportIssuePlaceService.GetAllPassportIssuePlaces()
+                .Map<MedicalExamination.BLL.PassportIssuePlaceModel, PassportIssuePlaceModel>().ToArray();
 
-                _patientService.DeletePatient(patientModel);
+            patientModel.Person.PassportIssuePlaces =
+                new SelectList(passportIssuePlaceModels, "Id", "Name", passportIssuePlaceModels[0].Id);
 
-                return Ok();
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            var insuranceCompaniesModels = _insuranceCompanyService.GetAllInsuranceCompanies()
+                .Map<MedicalExamination.BLL.InsuranceCompanyModel, InsuranceCompanyViewModel>().ToArray();
+
+            patientModel.InsuranceCompanies =
+                new SelectList(insuranceCompaniesModels, "Id", "Name", insuranceCompaniesModels[0].Id);
         }
     }
 }

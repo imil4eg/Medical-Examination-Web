@@ -1,0 +1,19 @@
+﻿@model PatientViewModel
+
+@{
+    ViewData["Title"] = "PatientProfile";
+}
+
+<h2>@string.Format("{0} {1}", Model.Person.FirstName, Model.Person.LastName)</h2>
+
+<form asp-controller="Patient" asp-action="UpdatePatient" method="post">
+    <div class="form-horizontal">
+        <a ></a>
+        <partial name="../Shared/_PatientPartial.cshtml" model="@Model"/>
+        <div class="col-md-12">
+            <input type="submit" class="btn btn-success" value="Сохранить изменения"/>
+            <a asp-controller="Patient" asp-action="Patients" class="btn btn-primary">Отменить</a>
+        </div>
+    </div>
+</form>
+

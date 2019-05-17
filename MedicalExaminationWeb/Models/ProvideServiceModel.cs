@@ -4,7 +4,7 @@ using System.Runtime.Serialization;
 namespace MedicalExaminationWeb
 {
     [DataContract]
-    public sealed class ProvideServiceModel
+    public sealed class ProvideServiceViewModel
     {
         [DataMember(Name = "id")]
         public Guid Id { get; set; }
@@ -14,5 +14,7 @@ namespace MedicalExaminationWeb
 
         [DataMember(Name = "service_id")]
         public Guid ServiceId { get; set; }
+
+        public ServiceViewModel Service { get; set; }
     }
 }

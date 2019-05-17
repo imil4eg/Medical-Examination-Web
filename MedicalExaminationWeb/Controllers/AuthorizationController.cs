@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using MedicalExamination.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -20,6 +21,9 @@ namespace MedicalExaminationWeb.Controllers
         [HttpGet]
         public IActionResult Login()
         {
+            if (User.Identity.IsAuthenticated)
+                return RedirectToAction("Patients", "Patient");
+
             var model = new LoginModel();
 
             return View(model);
@@ -27,6 +31,7 @@ namespace MedicalExaminationWeb.Controllers
         
         //[Route("~/api/login")]
         [HttpPost]
+        [AllowAnonymous]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginModel model)
         {
@@ -42,7 +47,6 @@ namespace MedicalExaminationWeb.Controllers
             }
 
             var result = await _signInManager.PasswordSignInAsync(user, model.Password, true, false);
-
 
             if (result.Succeeded)
                 return RedirectToAction("Patients", "Patient");

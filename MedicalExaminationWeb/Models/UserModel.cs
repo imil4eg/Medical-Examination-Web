@@ -19,6 +19,6 @@ namespace MedicalExaminationWeb
         public string OldPassword { get; set; }
 
         [DataMember(Name = "worker")]
-        public WorkerModel Worker { get; set; }
+        public WorkerViewModel Worker { get; set; }
     }
 }

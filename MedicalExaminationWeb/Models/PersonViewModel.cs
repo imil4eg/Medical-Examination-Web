@@ -5,8 +5,14 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace MedicalExaminationWeb
 {
-    public class PersonModel
+    public sealed class PersonViewModel
     {
+        public PersonViewModel()
+        {
+            this.BirthDate = DateTime.Today;
+            this.PassportIssueDate = DateTime.Today;
+        }
+
         public int Id { get; set; }
 
         [DisplayName("Фамилия")]
@@ -39,7 +45,15 @@ namespace MedicalExaminationWeb
         [Required(AllowEmptyStrings = false, ErrorMessage = "Это поле не может быть пустым.")]
         public DateTime PassportIssueDate { get; set; }
 
-        //[DisplayName("Место выдачи паспорта")]
+        [DisplayName("ИНН")]
+        [StringLength(12, ErrorMessage = "Длина данного поля должна быть 12 символов", MinimumLength = 12)]
+        public string INN { get; set; }
+
+        [DisplayName("СНИЛС")]
+        [StringLength(10, ErrorMessage = "Длина данного поля должна быть 12 символов", MinimumLength = 10)]
+        public string SNILS { get; set; }
+
+        [DisplayName("Место выдачи паспорта")]
         public SelectList PassportIssuePlaces { get; set; }
         public Guid SelectedPassportIssuePlaceId { get; set; }
     }

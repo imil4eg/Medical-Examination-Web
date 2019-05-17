@@ -22,6 +22,10 @@ namespace SimpleMapper
 
                 var convertedToPropertyTypeValue = ValueConverter.Convert(destinationProperty.PropertyType,
                     sourcePropertyInfo.GetValue(sourceModel));
+
+                if(convertedToPropertyTypeValue == null)
+                    continue;
+
                 destinationProperty.SetValue(destinationModel, convertedToPropertyTypeValue);
             }
 

@@ -18,7 +18,7 @@ namespace MedicalExaminationWeb
                 var services = scope.ServiceProvider;
 
                 var context = services.GetRequiredService<MedicalExaminationContext>();
-                var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
+                var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();  
                 var roleManager = services.GetRequiredService<RoleManager<ApplicationRole>>();
 
                 var dbInitializer = new DbInitializer(context, userManager, roleManager);

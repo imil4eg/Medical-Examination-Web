@@ -4,7 +4,7 @@ using System.Runtime.Serialization;
 namespace MedicalExaminationWeb
 {
     [DataContract]
-    public sealed class PositionTypeModel
+    public sealed class PositionTypeViewModel
     {
         [DataMember(Name = "id")]
         public Guid Id { get; set; }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using MedicalExamination.DAL;
 using MedicalExamination.Entities;
+using SimpleMapper;
 
 namespace MedicalExamination.BLL
 {
@@ -14,14 +15,19 @@ namespace MedicalExamination.BLL
             _serviceTypeRepository = serviceTypeRepository;
         }
 
-        public IEnumerable<ServiceType> GetAllAServiceTypes()
+        public IEnumerable<ServiceTypeModel> GetAllAServiceTypes()
         {
-            return _serviceTypeRepository.GetAll();
+            var servicesModels = _serviceTypeRepository.GetAll().Map<ServiceType, ServiceTypeModel>();
+
+            return servicesModels;
         }
 
-        public ServiceType GetServiceType(Guid id)
+        public ServiceTypeModel GetServiceType(Guid id)
         {
-            return _serviceTypeRepository.GetById(id);
+            var serviceModel =
+                SimpleMapper.Mapper.Map<ServiceType, ServiceTypeModel>(_serviceTypeRepository.GetById(id));
+
+            return serviceModel;
         }
 
         public void CreateServiceType(ServiceTypeModel serviceTypeModel)
@@ -33,7 +39,6 @@ namespace MedicalExamination.BLL
 
         public void UpdateServiceType(ServiceTypeModel serviceTypeModel)
         {
-
             var serviceType = SimpleMapper.Mapper.Map<ServiceTypeModel, ServiceType>(serviceTypeModel);
 
             _serviceTypeRepository.Update(serviceType);

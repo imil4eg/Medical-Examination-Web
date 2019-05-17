@@ -33,6 +33,98 @@ namespace MedicalExaminationWeb
             await InitUsers();
             InitPatients();
             InitServiceType();
+            InitWorker();
+            InitProvideService();
+            InitPositionType();
+            InitPosition();
+        }
+
+        private void InitPosition()
+        {
+            if(_context.Positions.Any())
+                return;
+
+            var worker = _context.Workers.First();
+
+            var positionType = _context.PositionTypes.First();
+
+            var position = new Position
+            {
+                PositionId = positionType.Id,
+                PositionType = positionType,
+                Worker = worker,
+                WorkerId = worker.PersonId
+            };
+        }
+
+        private void InitWorker()
+        {
+            if(_context.Workers.Any())
+                return;
+
+            var passportIssuePlaceType = _context.PassportIssuePlaceTypes.ToList()[1];
+
+            var person = new Person
+            {
+                BirthDate = DateTime.Now.AddYears(-36),
+                FirstName = "Петрович",
+                LastName = "Иван",
+                Gender = MedicalExamination.Entities.Gender.Female,
+                INN = "32228",
+                MiddleName = "Иванович",
+                PassportIssueDate = DateTime.Now,
+                PassportIssuePlaceId = passportIssuePlaceType.Id,
+                PassportNumber = "436463",
+                PassportSeries = "543534",
+                SNILS = "54353453453"
+            };
+
+            person.Id = _context.Persons.Add(person).Entity.Id;
+
+            _context.SaveChanges();
+
+            var worker = new Worker
+            {
+                PersonId = person.Id,
+                Person = person
+            };
+
+            _context.Workers.Add(worker);
+
+            _context.SaveChanges();
+        }
+
+        private void InitPositionType()
+        {
+            if(_context.PositionTypes.Any())
+                return;
+
+            var positionType = new PositionType
+            {
+                Name = "Хирург"
+            };
+
+            _context.PositionTypes.Add(positionType);
+
+            _context.SaveChanges();
+        }
+
+        private void InitProvideService()
+        {
+            if(_context.ProvideServices.Any())
+                return;
+
+            var positionType = _context.PositionTypes.First();
+
+            var service = _context.ServiceTypes.Last();
+
+            var provideService = new ProvideService
+            {
+                Position = positionType,
+                PositionId = positionType.Id,
+                Service = service,
+                ServiceId = service.Id
+            };
         }
 
         private async Task InitUsers()
@@ -218,12 +310,23 @@ namespace MedicalExaminationWeb
                 return;
             }
 
-            var testInsuranceCompanyType = new InsuranceCompanyType
+            var insuranceCompanies = new List<InsuranceCompanyType>
             {
-                Name = "Test Insurance Company"
+                new InsuranceCompanyType
+                {
+                    Name = "Ак Барс"
+                },
+                new InsuranceCompanyType
+                {
+                    Name = "Альфа Страхование"
+                },
+                new InsuranceCompanyType
+                {
+                    Name = "Спасение"
+                }
             };
 
-            _context.InsuranceCompanyTypes.Add(testInsuranceCompanyType);
+            _context.InsuranceCompanyTypes.AddRange(insuranceCompanies);
             _context.SaveChanges();
         }
 

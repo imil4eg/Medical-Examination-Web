@@ -1,11 +1,13 @@
 ﻿using System;
+using System.Linq;
 using MedicalExamination.BLL;
 using Microsoft.AspNetCore.Mvc;
+using SimpleMapper;
 
 namespace MedicalExaminationWeb.Controllers
 {
     [Route("api/[controller]")]
-    public sealed class WorkerController : ControllerBase
+    public sealed class WorkerController : Controller
     {
         private readonly IWorkerService _workerService;
 
@@ -15,11 +17,19 @@ namespace MedicalExaminationWeb.Controllers
         }
 
         [HttpGet]
-        public ActionResult GetWorkers()
+        public ActionResult Workers()
         {
-            var workers = _workerService.GetAllWorkers();
+            var workers = _workerService.GetAllWorkers().ToArray();
 
-            return Ok(workers);
+            var models = workers.Map<WorkerModel, WorkerViewModel>().ToArray();
+
+            for (int i = 1; i < workers.Length; i++)
+            {
+                models[i].Person = SimpleMapper.Mapper.Map<PersonModel, PersonViewModel>(workers[i].Person);
+                models[i].Positions = workers[i].Positions.Map<PositionModel, PositionViewModel>();
+            }
+
+            return View(models);
         }
 
         [HttpGet]
@@ -33,12 +43,12 @@ namespace MedicalExaminationWeb.Controllers
 
         [HttpPost]
         [Route("create")]
-        public  ActionResult CreateWorker([FromBody] WorkerModel model)
+        public  ActionResult CreateWorker([FromBody] WorkerViewModel model)
         {
             try
             {
-                var worker = SimpleMapper.Mapper.Map<WorkerModel, MedicalExamination.BLL.WorkerModel>(model);
-                worker.Person = SimpleMapper.Mapper.Map<PersonModel, MedicalExamination.BLL.PersonModel>(model.Person);
+                var worker = SimpleMapper.Mapper.Map<WorkerViewModel, MedicalExamination.BLL.WorkerModel>(model);
+                worker.Person = SimpleMapper.Mapper.Map<PersonViewModel, MedicalExamination.BLL.PersonModel>(model.Person);
 
                 _workerService.CreateWorker(worker);
 
@@ -52,12 +62,12 @@ namespace MedicalExaminationWeb.Controllers
 
         [HttpPut]
         [Route("update")]
-        public ActionResult UpdateWorker([FromBody] WorkerModel model)
+        public ActionResult UpdateWorker([FromBody] WorkerViewModel model)
         {
             try
             {
-                var worker = SimpleMapper.Mapper.Map<WorkerModel, MedicalExamination.BLL.WorkerModel>(model);
-                worker.Person = SimpleMapper.Mapper.Map<PersonModel, MedicalExamination.BLL.PersonModel>(model.Person); 
+                var worker = SimpleMapper.Mapper.Map<WorkerViewModel, MedicalExamination.BLL.WorkerModel>(model);
+                worker.Person = SimpleMapper.Mapper.Map<PersonViewModel, MedicalExamination.BLL.PersonModel>(model.Person); 
 
                 _workerService.UpdateWorker(worker);
 
@@ -71,12 +81,12 @@ namespace MedicalExaminationWeb.Controllers
 
         [HttpDelete]
         [Route("delete")]
-        public ActionResult DeleteWorker([FromBody] WorkerModel model)
+        public ActionResult DeleteWorker([FromBody] WorkerViewModel model)
         {
             try
             {
-                var worker = SimpleMapper.Mapper.Map<WorkerModel, MedicalExamination.BLL.WorkerModel>(model);
-                worker.Person = SimpleMapper.Mapper.Map<PersonModel, MedicalExamination.BLL.PersonModel>(model.Person);
+                var worker = SimpleMapper.Mapper.Map<WorkerViewModel, MedicalExamination.BLL.WorkerModel>(model);
+                worker.Person = SimpleMapper.Mapper.Map<PersonViewModel, MedicalExamination.BLL.PersonModel>(model.Person);
 
                 _workerService.DeleteWorker(worker);
 

@@ -9,7 +9,7 @@ namespace MedicalExamination.BLL
     public interface IPatientService
     {
         IEnumerable<PatientModel> GetAllPatients();
-        Patient GetPatient(int id);
+        PatientModel GetPatient(int id);
         void CreatePatient(PatientModel patient);
         void UpdatePatient(PatientModel patient);
         void DeletePatient(PatientModel patient);

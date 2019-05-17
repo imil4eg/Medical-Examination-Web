@@ -3,11 +3,11 @@ using System.ComponentModel;
 
 namespace MedicalExaminationWeb
 {
-    public class PassportIssuePlaceModel
+    public sealed class InsuranceCompanyViewModel
     {
         public Guid Id { get; set; }
 
-        [DisplayName("Место выдачи паспорта")]
+        [DisplayName("Название компании")]
         public string Name { get; set; }
     }
 }

@@ -29,12 +29,12 @@ namespace MedicalExaminationWeb.Controllers
 
         [HttpPost]
         [Route("create")]
-        public ActionResult CreatePositionType([FromBody] PositionTypeModel model)
+        public ActionResult CreatePositionType([FromBody] PositionTypeViewModel model)
         {
             try
             {
                 var positionType =
-                    SimpleMapper.Mapper.Map<PositionTypeModel, MedicalExamination.BLL.PositionTypeModel>(model);
+                    SimpleMapper.Mapper.Map<PositionTypeViewModel, MedicalExamination.BLL.PositionTypeModel>(model);
 
                 _positionTypeService.CreatePositionType(positionType);
 
@@ -48,12 +48,12 @@ namespace MedicalExaminationWeb.Controllers
 
         [HttpPut]
         [Route("update")]
-        public ActionResult UpdatePositionType([FromBody] PositionTypeModel model)
+        public ActionResult UpdatePositionType([FromBody] PositionTypeViewModel model)
         {
             try
             {
                 var positionType =
-                    SimpleMapper.Mapper.Map<PositionTypeModel, MedicalExamination.BLL.PositionTypeModel>(model);
+                    SimpleMapper.Mapper.Map<PositionTypeViewModel, MedicalExamination.BLL.PositionTypeModel>(model);
 
                 _positionTypeService.UpdatePositionType(positionType);
 
@@ -67,12 +67,12 @@ namespace MedicalExaminationWeb.Controllers
 
         [HttpDelete]
         [Route("delete")]
-        public ActionResult DeletePositionType([FromBody] PositionTypeModel model)
+        public ActionResult DeletePositionType([FromBody] PositionTypeViewModel model)
         {
             try
             {
                 var positionType =
-                    SimpleMapper.Mapper.Map<PositionTypeModel, MedicalExamination.BLL.PositionTypeModel>(model);
+                    SimpleMapper.Mapper.Map<PositionTypeViewModel, MedicalExamination.BLL.PositionTypeModel>(model);
 
                 _positionTypeService.DeletePositionType(positionType);
 

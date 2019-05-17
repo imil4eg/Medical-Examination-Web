@@ -8,8 +8,8 @@ namespace MedicalExamination.BLL
     /// </summary>
     public interface IWorkerService
     {
-        IEnumerable<Worker> GetAllWorkers();
-        Worker GetWorker(int id);
+        IEnumerable<WorkerModel> GetAllWorkers();
+        WorkerModel GetWorker(int id);
         void CreateWorker(WorkerModel workerModel);
         void UpdateWorker(WorkerModel workerModel);
         void DeleteWorker(WorkerModel workerModel);

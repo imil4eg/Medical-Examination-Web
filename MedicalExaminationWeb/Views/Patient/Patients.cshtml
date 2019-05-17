@@ -1,14 +1,23 @@
-﻿@model IEnumerable<PatientModel>
+﻿@model IEnumerable<PatientViewModel>
 
 @{
     ViewData["Title"] = "Patients";
 }
+
+<h2>Пациенты</h2>
 
 <div class="container">
     <div class="row">
         <hr />
         <a asp-controller="Patient" asp-action="CreatePatient" class="btn btn-success">Создать пациента</a>
         <table class="table">
+            <tr>
+                <th>Фамилия</th>
+                <th>Имя</th>
+                <th>Отчество</th>
+                <th>Пол</th>
+                <th>День рождения</th>
+            </tr>
             @foreach (var patient in Model)
             {
                 <tr>
@@ -17,6 +26,7 @@
                     <td>@patient.Person.MiddleName</td>
                     <td>@patient.Person.Gender</td>
                     <td>@patient.Person.BirthDate.Date.ToString("dd MMMM yyyy")</td>
+                    <td><a asp-controller="Patient" asp-action="GetPatient" asp-route-patientId="@patient.PersonId" class="btn btn-primary">Показать</a></td>
                 </tr>
             }
         </table>

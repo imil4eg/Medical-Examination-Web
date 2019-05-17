@@ -24,6 +24,10 @@ namespace MedicalExamination.BLL
         [DataMember(Name = "birthdate")]
         public DateTime BirthDate { get; set; }
 
+        public string INN { get; set; }
+
+        public string SNILS { get; set; }
+
         [DataMember(Name = "passport_number")]
         public string PassportNumber { get; set; }
 

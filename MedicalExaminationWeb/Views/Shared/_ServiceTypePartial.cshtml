@@ -1,0 +1,45 @@
+﻿@using Gender = MedicalExamination.Entities.Gender
+@model ServiceViewModel
+
+<div class="form-group">
+    <label asp-for="Name" class="control-label col-md-2"></label>
+    <div class="col-md-10">
+        <input type="text" asp-for="Name" class="form-control" />
+        @Html.ValidationMessageFor(m => m.Name, "", new { @class = "text-danger" })
+    </div>
+</div>
+<div class="form-group">
+    <label asp-for="Code" class="control-label col-md-2"></label>
+    <div class="col-md-10">
+        <input type="text" asp-for="Code" class="form-control"/>
+        @Html.ValidationMessageFor(m => m.Code, "", new { @class = "text-danger"})
+    </div>
+</div>
+<hr/>
+<div class="form-group">
+    <label asp-for="AgeRange" class="control-label col-md-2"></label>
+    <div class="form-group">
+        <label asp-for="AgeFrom" class="control-label col-md-1"></label>
+        <div class="col-md-2">
+            <input type="number" asp-for="AgeFrom" class="form-control" />
+            @Html.ValidationMessageFor(m => m.AgeFrom, "", new { @class = "text-danger" })
+        </div>
+        <label asp-for="AgeTo" class="control-label col-md-1"></label>
+        <div class="col-md-2">
+            <input type="number" asp-for="AgeTo" class="form-control" />
+            @Html.ValidationMessageFor(m => m.AgeTo, "", new { @class = "text-danger" })
+        </div>
+    </div>
+</div>
+<div class="form-group">
+    <label asp-for="Gender" class="control-label col-md-2"></label>
+    <div class="col-md-10">
+        @Html.DropDownListFor(m => m.Gender, new SelectList(Enum.GetValues(typeof(GenderOfService)), new {@class = "form-control"}))
+    </div>
+</div>
+<div class="form-group">
+    <label asp-for="IsIncluded" class="control-label col-md-2"></label>
+    <div class="col-md-2">
+        <input type="checkbox" asp-for="IsIncluded" class="form-control"/>
+    </div>
+</div>

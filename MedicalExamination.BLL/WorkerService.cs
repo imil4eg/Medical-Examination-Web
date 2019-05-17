@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using MedicalExamination.DAL;
 using MedicalExamination.Entities;
+using SimpleMapper;
 
 namespace MedicalExamination.BLL
 {
@@ -8,21 +10,43 @@ namespace MedicalExamination.BLL
     {
         private readonly IGenericRepository<Worker> _workerRepository;
         private readonly IGenericRepository<Person> _personRepository;
+        private readonly IGenericRepository<ProvideService> _provideServiceRepository;
+        private readonly IGenericRepository<ServiceType> _serviceRepository;
+        private readonly IGenericRepository<Position> _positionRepository;
 
-        public WorkerService(IGenericRepository<Worker> workerRepository, IGenericRepository<Person> personRepository)
+        public WorkerService(IGenericRepository<Worker> workerRepository, IGenericRepository<Person> personRepository,
+            IGenericRepository<ProvideService> provideServiceRepository, IGenericRepository<ServiceType> serviceRepository,
+            IGenericRepository<Position> positionRepository)
         {
             _workerRepository = workerRepository;
             _personRepository = personRepository;
-        }
- 
-        public IEnumerable<Worker> GetAllWorkers()
-        {
-            return _workerRepository.GetAll();
+            _provideServiceRepository = provideServiceRepository;
+            _serviceRepository = serviceRepository;
+            _positionRepository = positionRepository;
         }
 
-        public Worker GetWorker(int id)
+        public IEnumerable<WorkerModel> GetAllWorkers()
         {
-            return _workerRepository.GetById(id);
+            var workers = _workerRepository.GetAll().ToArray();
+
+            var models = workers.Map<Worker, WorkerModel>().ToArray();
+            for (int i = 0; i < models.Length; i++)
+            {
+                models[i].Person =
+                    SimpleMapper.Mapper.Map<Person, PersonModel>(_personRepository.GetById(workers[i].PersonId));
+
+                models[i].Positions = _positionRepository.GetAll().Where(p => p.WorkerId == models[i].PersonId)
+                    .Map<Position, PositionModel>();
+            }
+
+            return models;
+        }
+
+        public WorkerModel GetWorker(int id)
+        {
+            var model = SimpleMapper.Mapper.Map<Worker, WorkerModel>(_workerRepository.GetById(id));
+
+            return model;
         }
 
         public void CreateWorker(WorkerModel workerModel)

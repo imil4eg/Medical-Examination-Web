@@ -9,10 +9,12 @@ namespace MedicalExaminationWeb.Controllers
     public sealed class AppointmentController : Controller
     {
         private readonly IAppointmentService _appointmentService;
+        private readonly IPatientService _patientService;
 
-        public AppointmentController(IAppointmentService appointmentService)
+        public AppointmentController(IAppointmentService appointmentService, IPatientService patientService)
         {
             _appointmentService = appointmentService;
+            _patientService = patientService;
         }
 
         [HttpGet]
@@ -28,18 +30,29 @@ namespace MedicalExaminationWeb.Controllers
             return Ok(this._appointmentService.GetAppointment(id));
         }
 
+        //[HttpGet]
+        //public ActionResult CreateAppointment(int patientId)
+        //{
+        //    var patientModel =
+        //        SimpleMapper.Mapper.Map<PatientModel, PatientViewModel>(_patientService.GetPatient(patientId));
+        //
+        //    var model = new AppointmentViewModel();
+        //
+        //    
+        //}
+
         [HttpPost]
         [Route("create")]
-        public ActionResult CreateAppointment(AppointmentModel model)
+        public ActionResult CreateAppointment(AppointmentViewModel model)
         {
             try
             {
                 var appointment =
-                    SimpleMapper.Mapper.Map<AppointmentModel, MedicalExamination.BLL.AppointmentModel>(model);
+                    SimpleMapper.Mapper.Map<AppointmentViewModel, MedicalExamination.BLL.AppointmentModel>(model);
                 appointment.Patient =
-                    SimpleMapper.Mapper.Map<PatientModel, MedicalExamination.BLL.PatientModel>(model.Patient);
+                    SimpleMapper.Mapper.Map<PatientViewModel, MedicalExamination.BLL.PatientModel>(model.Patient);
                 appointment.Worker =
-                    SimpleMapper.Mapper.Map<WorkerModel, MedicalExamination.BLL.WorkerModel>(model.Worker);
+                    SimpleMapper.Mapper.Map<WorkerViewModel, MedicalExamination.BLL.WorkerModel>(model.Worker);
                 appointment.ServicesResults = model.ServicesResults.Select(sr =>
                     SimpleMapper.Mapper.Map<ServiceResultModel, MedicalExamination.BLL.ServiceResultModel>(sr));
 
@@ -64,16 +77,16 @@ namespace MedicalExaminationWeb.Controllers
 
         [HttpPut]
         [Route("update")]
-        public ActionResult UpdateAppointment(AppointmentModel model)
+        public ActionResult UpdateAppointment(AppointmentViewModel model)
         {
             try
             {
                 var appointment =
-                    SimpleMapper.Mapper.Map<AppointmentModel, MedicalExamination.BLL.AppointmentModel>(model);
+                    SimpleMapper.Mapper.Map<AppointmentViewModel, MedicalExamination.BLL.AppointmentModel>(model);
                 appointment.Patient =
-                    SimpleMapper.Mapper.Map<PatientModel, MedicalExamination.BLL.PatientModel>(model.Patient);
+                    SimpleMapper.Mapper.Map<PatientViewModel, MedicalExamination.BLL.PatientModel>(model.Patient);
                 appointment.Worker =
-                    SimpleMapper.Mapper.Map<WorkerModel, MedicalExamination.BLL.WorkerModel>(model.Worker);
+                    SimpleMapper.Mapper.Map<WorkerViewModel, MedicalExamination.BLL.WorkerModel>(model.Worker);
                 appointment.ServicesResults = model.ServicesResults.Select(sr =>
                     SimpleMapper.Mapper.Map<ServiceResultModel, MedicalExamination.BLL.ServiceResultModel>(sr));
 
@@ -98,16 +111,16 @@ namespace MedicalExaminationWeb.Controllers
 
         [HttpDelete]
         [Route("delete")]
-        public ActionResult DeleteAppointment(AppointmentModel model)
+        public ActionResult DeleteAppointment(AppointmentViewModel model)
         {
             try
             {
                 var appointment =
-                    SimpleMapper.Mapper.Map<AppointmentModel, MedicalExamination.BLL.AppointmentModel>(model);
+                    SimpleMapper.Mapper.Map<AppointmentViewModel, MedicalExamination.BLL.AppointmentModel>(model);
                 appointment.Patient =
-                    SimpleMapper.Mapper.Map<PatientModel, MedicalExamination.BLL.PatientModel>(model.Patient);
+                    SimpleMapper.Mapper.Map<PatientViewModel, MedicalExamination.BLL.PatientModel>(model.Patient);
                 appointment.Worker =
-                    SimpleMapper.Mapper.Map<WorkerModel, MedicalExamination.BLL.WorkerModel>(model.Worker);
+                    SimpleMapper.Mapper.Map<WorkerViewModel, MedicalExamination.BLL.WorkerModel>(model.Worker);
                 appointment.ServicesResults = model.ServicesResults.Select(sr =>
                     SimpleMapper.Mapper.Map<ServiceResultModel, MedicalExamination.BLL.ServiceResultModel>(sr));
 

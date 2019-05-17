@@ -1,0 +1,32 @@
+﻿@model IEnumerable<ServiceViewModel>
+
+@{
+    ViewData["Title"] = "ServiceTypes";
+}
+
+<h2>Услуги</h2>
+
+<div class="container">
+    <div class="row">
+        <hr />
+        <a asp-controller="ServiceType" asp-action="CreateServiceType" class="btn btn-success">Создать услугу</a>
+        <table class="table">
+            <tr>
+                <th>Название</th>
+                <th>Подходящий пол</th>
+                <th>Возраст</th>
+                <th>Включен в диспансеризацию</th>
+            </tr>
+            @foreach (var service in Model)
+            {
+                <tr>
+                    <td>@service.Name</td>
+                    <td>@service.Gender</td>
+                    <td>@service.AgeRange</td>
+                    <td>@(service.IsIncluded ? "Да" : "Нет")</td>
+                    <td><a asp-controller="ServiceType" asp-action="ServiceType" asp-route-serviceTypeId="@service.Id" class="btn btn-primary">Открыть</a></td>
+                </tr>
+            }
+        </table>
+    </div>
+</div>

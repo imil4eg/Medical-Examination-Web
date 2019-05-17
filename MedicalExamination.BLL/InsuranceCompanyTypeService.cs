@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using MedicalExamination.DAL;
 using MedicalExamination.Entities;
+using SimpleMapper;
 
 namespace MedicalExamination.BLL
 {
@@ -14,25 +15,34 @@ namespace MedicalExamination.BLL
             _insuranceCompanyTypeRepository = insuranceCompanyTypeRepository;
         }
 
-        public IEnumerable<InsuranceCompanyType> GetAllInsuranceCompanyTypes()
+        public IEnumerable<InsuranceCompanyModel> GetAllInsuranceCompanies()
         {
-            return _insuranceCompanyTypeRepository.GetAll();
+            var insuranceCompanyModels = _insuranceCompanyTypeRepository.GetAll()
+                .Map<InsuranceCompanyType, InsuranceCompanyModel>();
+
+            return insuranceCompanyModels;
         }
 
-        public InsuranceCompanyType GetInsuranceCompanyType(Guid id)
+        public InsuranceCompanyModel GetInsuranceCompany(Guid id)
         {
-            return _insuranceCompanyTypeRepository.GetById(id);
+            var insuranceCompany = _insuranceCompanyTypeRepository.GetById(id);
+
+            var insuranceCompanyModel =
+                SimpleMapper.Mapper.Map<InsuranceCompanyType, InsuranceCompanyModel>(insuranceCompany);
+
+            return insuranceCompanyModel;
         }
 
-        public void CreateInsuranceCompanyType(InsuranceCompanyModel insuranceCompanyModel)
+        public void CreateInsuranceCompany(InsuranceCompanyModel insuranceCompanyModel)
         {
+           
             var insuranceCompanyType =
                 SimpleMapper.Mapper.Map<InsuranceCompanyModel, InsuranceCompanyType>(insuranceCompanyModel);
 
             _insuranceCompanyTypeRepository.Insert(insuranceCompanyType);
         }
 
-        public void UpdateInsuranceCompanyType(InsuranceCompanyModel insuranceCompanyModel)
+        public void UpdateInsuranceCompany(InsuranceCompanyModel insuranceCompanyModel)
         {
             var insuranceCompanyType =
                 SimpleMapper.Mapper.Map<InsuranceCompanyModel, InsuranceCompanyType>(insuranceCompanyModel);
@@ -40,7 +50,7 @@ namespace MedicalExamination.BLL
             _insuranceCompanyTypeRepository.Update(insuranceCompanyType);
         }
 
-        public void DeleteInsuranceCompanyType(InsuranceCompanyModel insuranceCompanyModel)
+        public void DeleteInsuranceCompany(InsuranceCompanyModel insuranceCompanyModel)
         {
             var insuranceCompanyType =
                 SimpleMapper.Mapper.Map<InsuranceCompanyModel, InsuranceCompanyType>(insuranceCompanyModel);

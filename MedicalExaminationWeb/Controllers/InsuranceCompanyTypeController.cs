@@ -17,26 +17,26 @@ namespace MedicalExaminationWeb.Controllers
         [HttpGet]
         public ActionResult GetAllInsuranceCompanies()
         {
-            return Ok(_insuranceCompanyTypeService.GetAllInsuranceCompanyTypes());
+            return Ok(_insuranceCompanyTypeService.GetAllInsuranceCompanies());
         }
 
         [HttpGet]
         [Route("getinsurancecompany")]
         public ActionResult GetInsuranceCompany(Guid id)
         {
-            return Ok(_insuranceCompanyTypeService.GetInsuranceCompanyType(id));
+            return Ok(_insuranceCompanyTypeService.GetInsuranceCompany(id));
         }
 
         [HttpPost]
         [Route("create")]
-        public ActionResult CreateInsuranceCompany([FromBody] InsuranceCompanyModel model)
+        public ActionResult CreateInsuranceCompany([FromBody] InsuranceCompanyViewModel model)
         {
             try
             {
                 var insuranceCompany = SimpleMapper.Mapper
-                    .Map<InsuranceCompanyModel, MedicalExamination.BLL.InsuranceCompanyModel>(model);
+                    .Map<InsuranceCompanyViewModel, MedicalExamination.BLL.InsuranceCompanyModel>(model);
 
-                _insuranceCompanyTypeService.CreateInsuranceCompanyType(insuranceCompany);
+                _insuranceCompanyTypeService.CreateInsuranceCompany(insuranceCompany);
 
                 return Ok();
             }
@@ -48,14 +48,14 @@ namespace MedicalExaminationWeb.Controllers
 
         [HttpPut]
         [Route("update")]
-        public ActionResult UpdateInsuranceCompany([FromBody] InsuranceCompanyModel model)
+        public ActionResult UpdateInsuranceCompany([FromBody] InsuranceCompanyViewModel model)
         {
             try
             {
                 var insuranceCompany = SimpleMapper.Mapper
-                    .Map<InsuranceCompanyModel, MedicalExamination.BLL.InsuranceCompanyModel>(model);
+                    .Map<InsuranceCompanyViewModel, MedicalExamination.BLL.InsuranceCompanyModel>(model);
 
-                _insuranceCompanyTypeService.UpdateInsuranceCompanyType(insuranceCompany);
+                _insuranceCompanyTypeService.UpdateInsuranceCompany(insuranceCompany);
 
                 return Ok();
             }
@@ -67,14 +67,14 @@ namespace MedicalExaminationWeb.Controllers
 
         [HttpDelete]
         [Route("delete")]
-        public ActionResult DeleteInsuranceCompany([FromBody] InsuranceCompanyModel model)
+        public ActionResult DeleteInsuranceCompany([FromBody] InsuranceCompanyViewModel model)
         {
             try
             {
                 var insuranceCompany = SimpleMapper.Mapper
-                    .Map<InsuranceCompanyModel, MedicalExamination.BLL.InsuranceCompanyModel>(model);
+                    .Map<InsuranceCompanyViewModel, MedicalExamination.BLL.InsuranceCompanyModel>(model);
 
-                _insuranceCompanyTypeService.DeleteInsuranceCompanyType(insuranceCompany);
+                _insuranceCompanyTypeService.DeleteInsuranceCompany(insuranceCompany);
 
                 return Ok();
             }

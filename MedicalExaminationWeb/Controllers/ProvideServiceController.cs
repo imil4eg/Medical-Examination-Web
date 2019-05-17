@@ -29,12 +29,12 @@ namespace MedicalExaminationWeb.Controllers
 
         [HttpPost]
         [Route("create")]
-        public ActionResult CreateProvideService([FromBody] ProvideServiceModel model)
+        public ActionResult CreateProvideService([FromBody] ProvideServiceViewModel model)
         {
             try
             {
                 var provideService =
-                    SimpleMapper.Mapper.Map<ProvideServiceModel, MedicalExamination.BLL.ProvideServiceModel>(model);
+                    SimpleMapper.Mapper.Map<ProvideServiceViewModel, MedicalExamination.BLL.ProvideServiceModel>(model);
 
                 _provideServiceService.CreateProvideService(provideService);
 
@@ -48,12 +48,12 @@ namespace MedicalExaminationWeb.Controllers
 
         [HttpPut]
         [Route("update")]
-        public ActionResult UpdateProvideService([FromBody] ProvideServiceModel model)
+        public ActionResult UpdateProvideService([FromBody] ProvideServiceViewModel model)
         {
             try
             {
                 var provideService =
-                    SimpleMapper.Mapper.Map<ProvideServiceModel, MedicalExamination.BLL.ProvideServiceModel>(model);
+                    SimpleMapper.Mapper.Map<ProvideServiceViewModel, MedicalExamination.BLL.ProvideServiceModel>(model);
 
                 _provideServiceService.UpdateProvideService(provideService);
 
@@ -67,12 +67,12 @@ namespace MedicalExaminationWeb.Controllers
 
         [HttpDelete]
         [Route("delete")]
-        public ActionResult DeleteProvideService([FromBody] ProvideServiceModel model)
+        public ActionResult DeleteProvideService([FromBody] ProvideServiceViewModel model)
         {
             try
             {
                 var provideService =
-                    SimpleMapper.Mapper.Map<ProvideServiceModel, MedicalExamination.BLL.ProvideServiceModel>(model);
+                    SimpleMapper.Mapper.Map<ProvideServiceViewModel, MedicalExamination.BLL.ProvideServiceModel>(model);
 
                 _provideServiceService.DeleteProvideService(provideService);
 

@@ -37,9 +37,16 @@ namespace MedicalExamination.BLL
             return patientModels;
         }
 
-        public Patient GetPatient(int id)
+        public PatientModel GetPatient(int id)
         {
-             return _patientRepository.GetById(id);
+            var patient = _patientRepository.GetById(id);
+
+            var patientModel = SimpleMapper.Mapper.Map<Patient, PatientModel>(patient);
+
+            patientModel.Person =
+                SimpleMapper.Mapper.Map<Person, PersonModel>(_personRepository.GetById(patient.PersonId));
+
+            return patientModel;
         }
 
         public void CreatePatient(PatientModel patientModel)

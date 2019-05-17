@@ -1,0 +1,94 @@
+﻿@model PatientViewModel
+
+@Html.AntiForgeryToken()
+<hr />
+@Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+<div class="form-group">
+    <label asp-for="@Model.Person.LastName" class="control-label col-md-2"></label>
+    <div class="col-md-10">
+        <input type="text" asp-for="Person.LastName" class="form-control" />
+        @Html.ValidationMessageFor(m => m.Person.LastName, "", new { @class = "text-danger" })
+    </div>
+</div>
+<div class="form-group">
+    <label asp-for="@Model.Person.FirstName" class="control-label col-md-2"></label>
+    <div class="col-md-10">
+        <input type="text" asp-for="Person.FirstName" class="form-control" />
+        @Html.ValidationMessageFor(m => m.Person.FirstName, "", new { @class = "text-danger" })
+    </div>
+</div>
+<div class="form-group">
+    <label asp-for="@Model.Person.MiddleName" class="control-label col-md-2"></label>
+    <div class="col-md-10">
+        <input type="text" asp-for="Person.MiddleName" class="form-control" />
+        @Html.ValidationMessageFor(m => m.Person.MiddleName, "", new { @class = "text-danger" })
+    </div>
+</div>
+<div class="form-group">
+    <label asp-for="@Model.Person.Gender" class="control-label col-md-2"></label>
+    <div class="col-md-10">
+        @Html.DropDownListFor(m => m.Person.Gender, new SelectList(Enum.GetValues(typeof(Gender)), new { @class = "form-control" }))
+    </div>
+</div>
+<div class="form-group">
+    <label asp-for="@Model.Person.LastName" class="control-label col-md-2"></label>
+    <div class="col-md-10">
+        <input type="date" asp-for="Person.BirthDate" class="form-control" />
+        @Html.ValidationMessageFor(m => m.Person.BirthDate, "", new { @class = "text-danger" })
+    </div>
+</div>
+<div class="form-group">
+    <label asp-for="@Model.Person.INN" class="control-label col-md-2"></label>
+    <div class="col-md-10">
+        <input type="text" asp-for="Person.INN" placeholder="XXXXXXXXXXXXX" class="form-control" />
+        @Html.ValidationMessageFor(m => m.Person.INN, "", new { @class = "text-danger" })
+    </div>
+</div>
+<div class="form-group">
+    <label asp-for="@Model.Person.SNILS" class="control-label col-md-2"></label>
+    <div class="col-md-10">
+        <input type="text" asp-for="Person.SNILS" placeholder="XXX-XXX-XXX-XX" class="form-control" />
+        @Html.ValidationMessageFor(m => m.Person.SNILS, "", new { @class = "text-danger" })
+    </div>
+</div>
+<div class="form-group">
+    <label asp-for="@Model.Person.PassportNumber" class="control-label col-md-2"></label>
+    <div class="col-md-10">
+        <input type="number" asp-for="Person.PassportNumber" class="form-control" />
+        @Html.ValidationMessageFor(m => m.Person.PassportNumber, "", new { @class = "text-danger" })
+    </div>
+</div>
+<div class="form-group">
+    <label asp-for="@Model.Person.PassportSeries" class="control-label col-md-2"></label>
+    <div class="col-md-10">
+        <input type="number" asp-for="Person.PassportSeries" class="form-control" />
+        @Html.ValidationMessageFor(m => m.Person.PassportSeries, "", new { @class = "text-danger" })
+    </div>
+</div>
+<div class="form-group">
+    <label asp-for="@Model.Person.PassportIssueDate" class="control-label col-md-2"></label>
+    <div class="col-md-10">
+        <input type="date" asp-for="Person.PassportIssueDate" class="form-control" />
+        @Html.ValidationMessageFor(m => m.Person.PassportIssueDate, "", new { @class = "text-danger" })
+    </div>
+</div>
+<div class="form-group">
+    <label asp-for="Person.PassportIssuePlaces" class="control-label col-md-2"></label>
+    <div class="col-md-10">
+        @Html.DropDownListFor(m => m.Person.SelectedPassportIssuePlaceId, Model.Person.PassportIssuePlaces, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    <label asp-for="@Model.InsuranceNumber" class="control-label col-md-2"></label>
+    <div class="col-md-10">
+        <input type="number" asp-for=@Model.InsuranceNumber class="form-control" />
+        @Html.ValidationMessageFor(m => m.InsuranceNumber, "", new { @class = "text-danger" })
+    </div>
+</div>
+<div class="form-group">
+    <label asp-for="InsuranceCompanies" class="control-label col-md-2"></label>
+    <div class="col-md-10">
+        @Html.DropDownListFor(m => m.SelectedInsuranceCompanyId, Model.InsuranceCompanies, new { @class = "form-control" })
+    </div>
+</div>

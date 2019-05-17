@@ -1,0 +1,21 @@
+﻿@model ServiceViewModel
+
+@{
+    ViewData["Title"] = "ServiceType";
+}
+
+<h2>Услуга</h2>
+
+<form asp-controller="ServiceType" asp-action="UpdateServiceType" method="post">
+    @Html.HiddenFor(m => m.Id)
+    
+    @Html.AntiForgeryToken()
+    <div class="form-horizontal">
+        <partial name="../Shared/_ServiceTypePartial.cshtml" model="@Model"/>
+        <hr/>
+        <div class="col-md-12">
+            <input type="submit" class="btn btn-success" value="Сохранить изменения"/>
+            <a asp-controller="ServiceType" asp-action="ServiceTypes" class="btn btn-danger">Назад</a>
+        </div>
+    </div>
+</form>
