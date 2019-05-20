@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 
 namespace MedicalExaminationWeb
 {
@@ -10,8 +11,12 @@ namespace MedicalExaminationWeb
 
         public Guid ServiceTypeId { get; set; }
 
+        public ServiceViewModel Service { get; set; }
+
+        [DisplayName("Результат")]
         public string Result { get; set; }
 
+        [DisplayName("Номер пробирки")]
         public string TubeNumber { get; set; }
 
         public string Description { get; set; }

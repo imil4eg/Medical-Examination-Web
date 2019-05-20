@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Runtime.Serialization;
 
 namespace MedicalExamination.BLL
@@ -17,5 +18,7 @@ namespace MedicalExamination.BLL
 
         [DataMember(Name = "person")]
         public PersonModel Person { get; set; }
+
+        public IEnumerable<AppointmentModel> Appointments { get; set; }
     }
 }

@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using MedicalExamination.Entities;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace MedicalExaminationWeb
 {
@@ -11,7 +13,13 @@ namespace MedicalExaminationWeb
             this.EndDate = DateTime.Today;
         }
 
+        public Guid Id { get; set; }
+
         public WorkerViewModel Worker { get; set; }
+
+        [DisplayName("Врачи")]
+        public SelectList Workers { get; set; }
+        public int SelectedWorkerId { get; set; }
 
         public PatientViewModel Patient { get; set; }
 
@@ -21,7 +29,7 @@ namespace MedicalExaminationWeb
 
         public DateTime EndDate { get; set; }
 
-        public IEnumerable<ServiceResultModel> ServicesResults { get; set; }
+        public IList<ServiceResultModel> ServicesResults { get; set; }
 
         public QuestionnaireAfter75 QuestionnaireAfter75 { get; set; }
 

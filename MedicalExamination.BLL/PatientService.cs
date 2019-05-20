@@ -2,6 +2,7 @@
 using System.Linq;
 using MedicalExamination.DAL;
 using MedicalExamination.Entities;
+using SimpleMapper;
 
 namespace MedicalExamination.BLL
 {
@@ -9,11 +10,14 @@ namespace MedicalExamination.BLL
     {
         private readonly IGenericRepository<Patient> _patientRepository;
         private readonly IGenericRepository<Person> _personRepository;
+        private readonly IGenericRepository<Appointment> _appointmentRepository;
 
-        public PatientService(IGenericRepository<Patient> patientRepository, IGenericRepository<Person> personRepository)
+        public PatientService(IGenericRepository<Patient> patientRepository,
+            IGenericRepository<Person> personRepository, IGenericRepository<Appointment> appointmentRepository)
         {
             _patientRepository = patientRepository;
             _personRepository = personRepository;
+            _appointmentRepository = appointmentRepository;
         }
 
         public IEnumerable<PatientModel> GetAllPatients()
@@ -45,6 +49,9 @@ namespace MedicalExamination.BLL
 
             patientModel.Person =
                 SimpleMapper.Mapper.Map<Person, PersonModel>(_personRepository.GetById(patient.PersonId));
+
+            patientModel.Appointments = _appointmentRepository.GetAll().Where(a => a.PatientId == patient.PersonId)
+                .Map<Appointment, AppointmentModel>();
 
             return patientModel;
         }

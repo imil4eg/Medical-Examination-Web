@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using MedicalExamination.BLL.Extensions;
 using MedicalExamination.DAL;
 using MedicalExamination.Entities;
 using SimpleMapper;
@@ -49,6 +51,17 @@ namespace MedicalExamination.BLL
             var serviceType = SimpleMapper.Mapper.Map<ServiceTypeModel, ServiceType>(serviceTypeModel);
 
             _serviceTypeRepository.Delete(serviceType);
+        }
+
+        public IEnumerable<ServiceTypeModel> GetAllServicesForPerson(int gender, DateTime birthDate)
+        {
+            var serviceTypes = _serviceTypeRepository.GetAll().Where(s =>
+                s.IsIncluded && (s.Gender == GenderOfService.Both || (int) s.Gender == (int) gender) &&
+                s.AgeRange.Split('-').AgeBetweenGivenNumbers(birthDate));
+
+            var models = serviceTypes.Map<ServiceType, ServiceTypeModel>();
+
+            return models;
         }
     }
 }

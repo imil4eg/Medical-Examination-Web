@@ -1,11 +1,13 @@
-﻿
+﻿@model AppointmentViewModel
+
 @{
     ViewData["Title"] = "CreateAppointment";
 }
 
-<h2>CreateAppointment</h2>
+<h2>Создание случая</h2>
 
-<form>
+<form asp-controller="Appointment" asp-action="CreateAppointment" id="appointmentform">
+
     <div class="row">
         <div class="col-md-6">
             <div class="profile-head">
@@ -16,15 +18,12 @@
                     <li class="nav-item">
                         <a class="nav-link" id="services-tab" data-toggle="tab" href="#services" role="tab" aria-controls="services" aria-selected="False">Анализы</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" id="outcome-tab" data-toggle="tab" href="#outcome" role="tab" aria-controls="outcome" aria-selected="False">Исход</a>
-                    </li>
                 </ul>
             </div>
         </div>
         <div class="col-md-2">
             <a class="btn btn-danger" asp-action="GetPatient" asp-controller="Patient" asp-route-patientId="">Отменить</a>
-            <input type="submit" class="btn btn-success" value="Сохранить"/>
+            <input id="postappointment" onclick="post()" type="button" class="btn btn-success" value="Сохранить" />
         </div>
     </div>
     <div class="row">
@@ -32,15 +31,54 @@
         <div class="col-md-8">
             <div class="tab-content profile-tab" id="myTabContent">
                 <div class="tab-pane fade active" id="questionnaire" role="tabpanel" aria-labeledby="questionnaire-tab">
-
+                    <label>d</label>
                 </div>
                 <div class="tab-pane fade" id="services" role="tabpanel" aria-labeledby="services-tab">
-
-                </div>
-                <div class="tab-pane fade" id="outcome" role="tabpanel" aria-labeledby="outcome-tab">
-
+                    @for (int i = 0; i < Model.ServicesResults.Count; i++)
+                    {
+                        <div class="form-group">
+                            @Html.HiddenFor(m => m.ServicesResults[i].ServiceTypeId)
+                            <label class="control-label col-md-12">@Model.ServicesResults[i].Service.Name</label>
+                            <div class="form-group">
+                                <label asp-for="@Model.ServicesResults[i].Result" class="control-label col-md-2"></label>
+                                <div class="col-md-10">
+                                    <input type="text" asp-for="@Model.ServicesResults[i].Result" class="form-control"/>
+                                    @Html.ValidationMessageFor(m => Model.ServicesResults[i].Result, "", new {@class = "text-danger"})
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="@Model.ServicesResults[i].TubeNumber" class="control-label col-md-2"></label>
+                                <div class="col-md-10">
+                                    <input type="text" asp-for="@Model.ServicesResults[i].TubeNumber" class="form-control"/>
+                                    @Html.ValidationMessageFor(m => Model.ServicesResults[i].Result, "", new {@class = "text-danger"})
+                                </div>
+                            </div>
+                        </div>
+                    }
                 </div>
             </div>
         </div>
     </div>
 </form>
+
+@section Scripts{
+    <script src="/lib/jquery/dist/jquery.js"></script>
+    <script src="/lib/jquery/dist/jquery.min.js"></script>
+    <script type="text/javascript">
+            function post(){
+                var url = "@Url.Action("CreateAppointment", "Appointment")";
+
+                $.ajax({
+                    type: 'POST',   
+                    url: url,
+                    data:
+                        $('#appointmentform')
+                            .serialize(), //your form name.it takes all the values of model
+                    dataType: 'json',
+                    success: function(result) {
+                        console.log(result);
+                    }
+                });
+            };
+    </script>
+}

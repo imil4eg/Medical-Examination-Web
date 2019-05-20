@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.Serialization;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -21,5 +22,7 @@ namespace MedicalExaminationWeb
 
         [DataMember(Name = "person")]
         public PersonViewModel Person { get; set; }
+
+        public IEnumerable<AppointmentViewModel> Appointments { get; set; }
     }
 }

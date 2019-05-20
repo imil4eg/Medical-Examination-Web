@@ -8,8 +8,29 @@
 
 <form asp-controller="Patient" asp-action="UpdatePatient" method="post">
     <div class="form-horizontal">
-        <a ></a>
         <partial name="../Shared/_PatientPartial.cshtml" model="@Model"/>
+        <a asp-controller="Appointment" asp-action="CreateAppointment" asp-route-patientId="@Model.PersonId" class="btn btn-success">Создать случай</a>
+        <hr/>
+        <table class="table table-bordered">
+            <tr>
+                <th>Номер</th>
+                <th>Доктор</th>
+                <th>Дата</th>
+            </tr>
+            @foreach (var appointment in Model.Appointments)
+            {
+                int i = 1;
+
+                <tr>
+                    <td>@i</td>
+                    <td>@appointment.Worker.Person.LastName</td>
+                    <td>@appointment.EndDate</td>
+                    <td><a asp-controller="Appointment" asp-action="GetAppointment" asp-route-appointmentId="@appointment.Id" class="btn btn-primary">Открыть</a></td>
+                </tr>
+
+                i++;
+            }
+        </table>
         <div class="col-md-12">
             <input type="submit" class="btn btn-success" value="Сохранить изменения"/>
             <a asp-controller="Patient" asp-action="Patients" class="btn btn-primary">Отменить</a>

@@ -13,5 +13,6 @@ namespace MedicalExamination.BLL
         void CreateServiceType(ServiceTypeModel serviceTypeModel);
         void UpdateServiceType(ServiceTypeModel serviceTypeModel);
         void DeleteServiceType(ServiceTypeModel serviceTypeModel);
+        IEnumerable<ServiceTypeModel> GetAllServicesForPerson(int gender, DateTime birthDate);
     }
 }

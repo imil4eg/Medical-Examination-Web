@@ -57,6 +57,8 @@ namespace MedicalExaminationWeb.Controllers
             patientModel.SelectedInsuranceCompanyId = patient.InsuranceCompanyId;
             patientModel.Person.SelectedPassportIssuePlaceId = patient.Person.PassportIssuePlaceId;
 
+            patientModel.Appointments = patient.Appointments.Map<AppointmentModel, AppointmentViewModel>();
+
             return View("PatientProfile", patientModel);
         }
 

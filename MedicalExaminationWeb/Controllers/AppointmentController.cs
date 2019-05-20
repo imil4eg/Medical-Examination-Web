@@ -1,20 +1,26 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using MedicalExamination.BLL;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using SimpleMapper;
 
 namespace MedicalExaminationWeb.Controllers
 {
-    [Route("api/[controller]")]
     public sealed class AppointmentController : Controller
     {
         private readonly IAppointmentService _appointmentService;
         private readonly IPatientService _patientService;
+        private readonly IWorkerService _workerService;
+        private readonly IServiceTypeService _serviceTypeService;
 
-        public AppointmentController(IAppointmentService appointmentService, IPatientService patientService)
+        public AppointmentController(IAppointmentService appointmentService, IPatientService patientService, IWorkerService workerService, IServiceTypeService serviceTypeService)
         {
             _appointmentService = appointmentService;
             _patientService = patientService;
+            _workerService = workerService;
+            _serviceTypeService = serviceTypeService;
         }
 
         [HttpGet]
@@ -24,25 +30,51 @@ namespace MedicalExaminationWeb.Controllers
         }
 
         [HttpGet]
-        [Route("getappointment")]
-        public ActionResult GetAppointment(Guid id)
+        public ActionResult GetAppointment(Guid appointmentId)
         {
-            return Ok(this._appointmentService.GetAppointment(id));
+            return Ok(this._appointmentService.GetAppointment(appointmentId));
         }
 
-        //[HttpGet]
-        //public ActionResult CreateAppointment(int patientId)
-        //{
-        //    var patientModel =
-        //        SimpleMapper.Mapper.Map<PatientModel, PatientViewModel>(_patientService.GetPatient(patientId));
-        //
-        //    var model = new AppointmentViewModel();
-        //
-        //    
-        //}
+        [HttpGet]
+        public ActionResult CreateAppointment(int patientId)
+        {
+            var patient = _patientService.GetPatient(patientId);
+
+            var patientModel =
+                SimpleMapper.Mapper.Map<PatientModel, PatientViewModel>(_patientService.GetPatient(patientId));
+            patientModel.Person = SimpleMapper.Mapper.Map<PersonModel, PersonViewModel>(patient.Person);
+
+            var appointmentModel = new AppointmentViewModel();
+            appointmentModel.Patient = patientModel;
+
+            var workers = _workerService.GetAllWorkers().ToArray();
+
+            var workerModels = workers.Map<WorkerModel, WorkerViewModel>().ToArray();
+            for (int i = 0; i < workerModels.Length; i++)
+            {
+                workerModels[i].Person = SimpleMapper.Mapper.Map<PersonModel, PersonViewModel>(workers[i].Person);
+                workerModels[i].FullName =
+                    string.Format(
+                        $"{workers[i].Person.LastName} {workers[i].Person.FirstName} {workers[i].Person.MiddleName}");
+                workerModels[i].PersonId = workers[i].PersonId;
+            }
+
+            appointmentModel.Workers = new SelectList(workerModels, "PersonId", "Name", workerModels[0].PersonId);
+
+            var serviceTypes =
+                _serviceTypeService.GetAllAServiceTypes().TakeWhile((m,i) => i < 10).Map<ServiceTypeModel, ServiceViewModel>();
+                    //.GetAllServicesForPerson((int) patientModel.Person.Gender, patientModel.Person.BirthDate)
+                    //.Map<ServiceTypeModel, ServiceViewModel>();
+
+            var serviceResults = serviceTypes.Select(serviceType => new ServiceResultModel
+                {Service = serviceType, ServiceTypeId = serviceType.Id,}).ToList();
+
+            appointmentModel.ServicesResults = serviceResults;
+
+            return View(appointmentModel);
+        }
 
         [HttpPost]
-        [Route("create")]
         public ActionResult CreateAppointment(AppointmentViewModel model)
         {
             try
@@ -76,7 +108,6 @@ namespace MedicalExaminationWeb.Controllers
         }
 
         [HttpPut]
-        [Route("update")]
         public ActionResult UpdateAppointment(AppointmentViewModel model)
         {
             try
@@ -110,7 +141,6 @@ namespace MedicalExaminationWeb.Controllers
         }
 
         [HttpDelete]
-        [Route("delete")]
         public ActionResult DeleteAppointment(AppointmentViewModel model)
         {
             try

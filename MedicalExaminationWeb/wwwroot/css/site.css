@@ -176,7 +176,7 @@ body {
     border-bottom: 2px solid #0062cc;
 }
 
-.profile-tab label {
+.profile-tab label th td {
     font-weight: 600;
 }
 
@@ -185,6 +185,12 @@ body {
     color: #0062cc;
 }
 
+.patient-table table{
+    border: 1px solid black;
+    width: 1500px;
+    height: 400px;
+    margin: 100px;
+}
 
 /* QR code generator */
 #qrCode {
