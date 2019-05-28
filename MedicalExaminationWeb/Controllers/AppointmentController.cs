@@ -62,9 +62,8 @@ namespace MedicalExaminationWeb.Controllers
             appointmentModel.Workers = new SelectList(workerModels, "PersonId", "Name", workerModels[0].PersonId);
 
             var serviceTypes =
-                _serviceTypeService.GetAllAServiceTypes().TakeWhile((m,i) => i < 10).Map<ServiceTypeModel, ServiceViewModel>();
-                    //.GetAllServicesForPerson((int) patientModel.Person.Gender, patientModel.Person.BirthDate)
-                    //.Map<ServiceTypeModel, ServiceViewModel>();
+                _serviceTypeService.GetAllServicesForPerson((int) patientModel.Person.Gender, patientModel.Person.BirthDate)
+                    .Map<ServiceTypeModel, ServiceViewModel>();
 
             var serviceResults = serviceTypes.Select(serviceType => new ServiceResultModel
                 {Service = serviceType, ServiceTypeId = serviceType.Id,}).ToList();

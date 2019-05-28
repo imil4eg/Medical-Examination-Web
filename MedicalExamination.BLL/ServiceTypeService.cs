@@ -55,9 +55,15 @@ namespace MedicalExamination.BLL
 
         public IEnumerable<ServiceTypeModel> GetAllServicesForPerson(int gender, DateTime birthDate)
         {
+
+            int age = DateTime.Now.Year - birthDate.Year;
+
             var serviceTypes = _serviceTypeRepository.GetAll().Where(s =>
-                s.IsIncluded && (s.Gender == GenderOfService.Both || (int) s.Gender == (int) gender) &&
-                s.AgeRange.Split('-').AgeBetweenGivenNumbers(birthDate));
+                s.IsIncluded &&
+                (s.Gender == GenderOfService.Both ||
+                 (int) s.Gender == (int) gender) &&
+                s.AgeRange.Split('-').AgeBetweenGivenNumbers(age) &&
+                PeriodCalculator.IsAgeInPeriod(age, s.Periodicity, s.AgeRange));
 
             var models = serviceTypes.Map<ServiceType, ServiceTypeModel>();
 

@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace MedicalExaminationWeb
 {
@@ -14,8 +15,9 @@ namespace MedicalExaminationWeb
         [Required(AllowEmptyStrings = false, ErrorMessage = "Это поле не может быть пустым")]
         public string Name { get; set; }
 
+
+        //[Required(AllowEmptyStrings = false, ErrorMessage = "Это поле не может быть пустым")]
         [DisplayName("Код МКБ")]
-        [Required(AllowEmptyStrings = false, ErrorMessage = "Это поле не может быть пустым")]
         public string Code { get; set; }
 
         [DisplayName("Пол услуги")]
@@ -72,6 +74,10 @@ namespace MedicalExaminationWeb
         }
 
         private string _ageRange = " - ";
+
+        [DisplayName("Периодичность процедуры")]
+        public SelectList Periodicity { get; set; }
+        public int SelectedPeriodicity { get; set; }
 
         [DisplayName("Включить в диспансеризацию")]
         public bool IsIncluded { get; set; }

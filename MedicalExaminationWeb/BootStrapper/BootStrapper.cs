@@ -41,7 +41,7 @@ namespace MedicalExaminationWeb
             }
         }
 
-        /// <summary>
+        /// <summary>   
         /// Injects services
         /// </summary>
         /// <param name="services"></param>

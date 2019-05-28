@@ -11,7 +11,9 @@ namespace MedicalExamination.BLL
 
         public string Code { get; set; }
 
-        public GenderOfService Gender { get; set; }
+        public byte Gender { get; set; }
+
+        public ProcedurePeriodicity Periodicity { get; set; }
 
         public string AgeRange { get; set; }
 
