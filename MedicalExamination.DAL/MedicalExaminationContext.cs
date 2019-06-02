@@ -16,7 +16,7 @@ namespace MedicalExamination.DAL
         /// <param name="options"></param>
         public MedicalExaminationContext(DbContextOptions<MedicalExaminationContext> options) : base(options)
         {
-            
+
         }
 
         public DbSet<Appointment> Appointments { get; set; }
@@ -50,6 +50,8 @@ namespace MedicalExamination.DAL
             modelBuilder.Entity<ApplicationUser>().HasOne(u => u.Worker).WithOne();
             modelBuilder.Entity<Patient>().HasOne(p => p.Person).WithOne().OnDelete(DeleteBehavior.Restrict);
             modelBuilder.Entity<Appointment>().HasOne(p => p.Patient).WithOne().OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<ProvideService>().HasOne(p => p.Position);
+            modelBuilder.Entity<ProvideService>().HasKey(p => p.Id);
 
         }
     }

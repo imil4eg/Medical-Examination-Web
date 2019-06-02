@@ -1,0 +1,18 @@
+﻿@model PositionTypeViewModel
+
+@{
+    ViewData["Title"] = "PositionType";
+}
+
+<h2>Должность</h2>
+
+<form asp-controller="PositionType" asp-action="UpdatePositionType" method="post">
+    <input type="hidden" asp-for="Id"/>
+    <div class="form-horizontal">
+        @*<partial name="../Shared/_PositionTypePartial.cshtml" model="@Model" />*@ @{ await Html.RenderPartialAsync("_PositionTypePartial", Model); }
+        <div class="col-md-12">
+            <input type="submit" class="btn btn-success" value="Сохранить изменения"/>
+            <a asp-controller="PositionType" asp-action="GetPositionTypes" class="btn btn-danger">Отменить</a>
+        </div>
+    </div>
+</form>

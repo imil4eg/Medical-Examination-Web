@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using MedicalExamination.BLL;
+using MedicalExamination.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using SimpleMapper;
@@ -70,6 +71,19 @@ namespace MedicalExaminationWeb.Controllers
 
             appointmentModel.ServicesResults = serviceResults;
 
+            if (DateTime.Today.Year - patient.Person.BirthDate.Year > 75)
+                appointmentModel.QuestionnaireAfter75 = new QuestionnaireAfter75();
+            else
+                appointmentModel.QuestionnaireTill75 = new QuestionnaireTill75ViewModel
+                {
+                    QuestionSeven = EnumDisplayNamePicker.GetDisplayNames(typeof(QuestionSevenAnswers)),
+                    QuestionTwentyOne = EnumDisplayNamePicker.GetDisplayNames(typeof(QuestionTwentyOneAnswers)),
+                    QuestionTwentyFive = EnumDisplayNamePicker.GetDisplayNames(typeof(QuestionTwentyFiveAnswers)),
+                    QuestionTwentySix = EnumDisplayNamePicker.GetDisplayNames(typeof(QuestionTwentySixAnswers)),
+                    QuestionTwentySeven = EnumDisplayNamePicker.GetDisplayNames(typeof(QuestionTwentySevenAnswers))
+                };
+            
+
             return View(appointmentModel);
         }
 
@@ -93,7 +107,7 @@ namespace MedicalExaminationWeb.Controllers
                 }
                 else
                 {
-                    appointment.QuestionnaireTill75 = model.QuestionnaireTill75;
+                    appointment.QuestionnaireTill75 = new QuestionnaireTill75();
                 }
 
                 this._appointmentService.CreateAppointment(appointment);
@@ -126,7 +140,7 @@ namespace MedicalExaminationWeb.Controllers
                 }
                 else
                 {
-                    appointment.QuestionnaireTill75 = model.QuestionnaireTill75;
+                    //appointment.QuestionnaireTill75 = model.QuestionnaireTill75;
                 }
 
                 this._appointmentService.UpdateAppointment(appointment);
@@ -159,7 +173,7 @@ namespace MedicalExaminationWeb.Controllers
                 }
                 else
                 {
-                    appointment.QuestionnaireTill75 = model.QuestionnaireTill75;
+                    //appointment.QuestionnaireTill75 = model.QuestionnaireTill75;
                 }
 
                 this._appointmentService.DeleteAppointment(appointment);

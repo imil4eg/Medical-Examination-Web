@@ -33,6 +33,6 @@ namespace MedicalExaminationWeb
 
         public QuestionnaireAfter75 QuestionnaireAfter75 { get; set; }
 
-        public QuestionnaireTill75 QuestionnaireTill75 { get; set; }
+        public QuestionnaireTill75ViewModel QuestionnaireTill75 { get; set; }
     }
 }

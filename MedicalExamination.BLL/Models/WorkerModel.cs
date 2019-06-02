@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace MedicalExamination.BLL
 {
@@ -13,5 +14,9 @@ namespace MedicalExamination.BLL
         public IEnumerable<ServiceTypeModel> ServiceTypes { get; set; }
 
         public IEnumerable<PositionModel> Positions { get; set; }
+
+        public IEnumerable<PositionTypeModel> PositionTypes { get; set; }
+
+        public Guid Position { get; set; }
     }
 }

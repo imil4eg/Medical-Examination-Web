@@ -1,0 +1,17 @@
+﻿@model PositionTypeViewModel
+
+
+<div class="form-group">
+    <label asp-for="Name" class="control-label col-md-2"></label>
+    <div class="col-md-10">
+        <input asp-for="Name" type="text" class="form-control"/>
+        @Html.ValidationMessageFor(m => m.Name, "", new {@class = "text-danger"})
+    </div>
+</div>
+<div class="form-group">
+    <label asp-for="ServiceTypes" class="control-label col-md-2"></label>
+    <div class="col-md-10">
+        <label class="control-label">Чтобы выбрать или исключить зажмите CTRL и нажмити Левую кнопку мыши над нужным полем.</label>
+        @Html.ListBoxFor(m => m.SelectedServiceTypes, Model.ServiceTypes, new {  @class = "form-control"})
+    </div>
+</div>

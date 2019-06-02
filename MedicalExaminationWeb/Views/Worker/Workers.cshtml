@@ -17,16 +17,16 @@
                 <th>Отчество</th>
                 <th>Должность</th>
             </tr>
-            <tr>
                 @foreach (var worker in @Model)
                 {
-                    <td>@worker.Person.LastName</td>
-                    <td>@worker.Person.FirstName</td>
-                    <td>@worker.Person.MiddleName</td>
-                    <td>@worker.Positions.First().Name</td>
-                    <td><a asp-controller="Worker" asp-action="GetWorker" class="btn btn-primary">Открыть</a></td>
+                    <tr>
+                        <td>@worker.Person.LastName</td>
+                        <td>@worker.Person.FirstName</td>
+                        <td>@worker.Person.MiddleName</td>
+                        <td>@worker.PositionTypes.First().Name</td>
+                        <td><a asp-controller="Worker" asp-action="GetWorker" asp-route-workerId="@worker.Person.Id" class="btn btn-primary">Открыть</a></td>
+                    </tr>
                 }
-            </tr>
         </table>
     </div>
 </div>

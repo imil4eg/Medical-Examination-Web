@@ -10,9 +10,11 @@ namespace MedicalExamination.BLL
     public interface IProvideServiceService
     {
         IEnumerable<ProvideService> GetAllProvideServices();
+        IEnumerable<ProvideServiceModel> GetProvideServicesOfPosition(Guid positionId);
         ProvideService GetProvideService(Guid id);
         void CreateProvideService(ProvideServiceModel provideServiceModel);
         void UpdateProvideService(ProvideServiceModel provideServiceModel);
         void DeleteProvideService(ProvideServiceModel provideServiceModel);
+        void DeleteProvideServices(IEnumerable<ProvideServiceModel> provideServiceModels);
     }
 }

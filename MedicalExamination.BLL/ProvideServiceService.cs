@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using MedicalExamination.DAL;
 using MedicalExamination.Entities;
+using SimpleMapper;
 
 namespace MedicalExamination.BLL
 {
@@ -43,6 +45,21 @@ namespace MedicalExamination.BLL
             var provideService = SimpleMapper.Mapper.Map<ProvideServiceModel, ProvideService>(provideServiceModel);
 
             _provideServiceRepository.Delete(provideService);
+        }
+
+        public void DeleteProvideServices(IEnumerable<ProvideServiceModel> provideServiceModels)
+        {
+            var provideServices = provideServiceModels.Map<ProvideServiceModel, ProvideService>();
+
+            _provideServiceRepository.Delete(provideServices);
+        }
+
+        public IEnumerable<ProvideServiceModel> GetProvideServicesOfPosition(Guid positionId)
+        {
+            var provideServicesOfPosition = _provideServiceRepository.GetAll().Where(ps => ps.PositionId == positionId)
+                .Map<ProvideService, ProvideServiceModel>();
+
+            return provideServicesOfPosition;
         }
     }
 }

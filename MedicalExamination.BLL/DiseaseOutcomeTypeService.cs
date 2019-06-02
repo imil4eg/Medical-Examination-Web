@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using MedicalExamination.DAL;
 using MedicalExamination.Entities;
 
@@ -16,7 +17,7 @@ namespace MedicalExamination.BLL
 
         public IEnumerable<DiseaseOutcomeType> GetAllDiseaseOutcomeTypes()
         {
-            return _diseaseOutcomeTypeRepository.GetAll();
+            return _diseaseOutcomeTypeRepository.GetAll().AsEnumerable();
         }
 
         public DiseaseOutcomeType GetDiseaseOutcomeType(Guid id)

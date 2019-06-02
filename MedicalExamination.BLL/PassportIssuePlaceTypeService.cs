@@ -17,7 +17,7 @@ namespace MedicalExamination.BLL
 
         public IEnumerable<PassportIssuePlaceModel> GetAllPassportIssuePlaces()
         {
-            var passportIssuePlaces = _passportIssuePlaceTypeRepository.GetAll();
+            var passportIssuePlaces = _passportIssuePlaceTypeRepository.GetAll().AsEnumerable();
 
             return passportIssuePlaces.Select(passportIssuePlaceType =>
                 SimpleMapper.Mapper.Map<PassportIssuePlaceType, PassportIssuePlaceModel>(passportIssuePlaceType));

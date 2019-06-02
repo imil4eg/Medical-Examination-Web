@@ -19,7 +19,7 @@ namespace MedicalExamination.BLL
 
         public IEnumerable<ServiceTypeModel> GetAllAServiceTypes()
         {
-            var servicesModels = _serviceTypeRepository.GetAll().Map<ServiceType, ServiceTypeModel>();
+            var servicesModels = _serviceTypeRepository.GetAll().AsEnumerable().Map<ServiceType, ServiceTypeModel>();
 
             return servicesModels;
         }
@@ -65,7 +65,7 @@ namespace MedicalExamination.BLL
                 s.AgeRange.Split('-').AgeBetweenGivenNumbers(age) &&
                 PeriodCalculator.IsAgeInPeriod(age, s.Periodicity, s.AgeRange));
 
-            var models = serviceTypes.Map<ServiceType, ServiceTypeModel>();
+            var models = serviceTypes.AsEnumerable().Map<ServiceType, ServiceTypeModel>();
 
             return models;
         }

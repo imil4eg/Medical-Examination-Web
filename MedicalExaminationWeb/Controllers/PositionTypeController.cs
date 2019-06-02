@@ -1,86 +1,98 @@
 ﻿using MedicalExamination.BLL;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using SimpleMapper;
 
 namespace MedicalExaminationWeb.Controllers
 {
-    [Route("api/[controller]")]
-    public sealed class PositionTypeController : ControllerBase
+    public sealed class PositionTypeController : Controller
     {
         private readonly IPositionTypeService _positionTypeService;
+        private readonly IServiceTypeService _serviceTypeService;
 
-        public PositionTypeController(IPositionTypeService positionTypeService)
+        public PositionTypeController(IPositionTypeService positionTypeService, IServiceTypeService serviceTypeService)
         {
             _positionTypeService = positionTypeService;
+            _serviceTypeService = serviceTypeService;
         }
 
         [HttpGet]
         public ActionResult GetPositionTypes()
         {
-            return Ok(_positionTypeService.GetAllPositionTypes());
+            var models = _positionTypeService.GetAllPositionTypes().Map<PositionTypeModel, PositionTypeViewModel>();
+
+            if (TempData.ContainsKey("ErrorMessage"))
+            {
+                ModelState.AddModelError("", TempData["ErrorMessage"] as string);
+            }
+
+            return View("PositionTypes", models);
+        }
+        
+        public ActionResult GetPositionType(Guid id)
+        {
+            var positionTypes = _positionTypeService.GetPositionType(id);
+            var serviceTypes = _serviceTypeService.GetAllAServiceTypes();
+
+            var model = SimpleMapper.Mapper.Map<PositionTypeModel, PositionTypeViewModel>(positionTypes);
+            model.ProvideServices = positionTypes.ProvideServices.Map<ProvideServiceModel, ProvideServiceViewModel>();
+            model.ServiceTypes = new MultiSelectList(serviceTypes, "Id", "Name");
+            model.SelectedServiceTypes = positionTypes.ServiceTypes.Select(st => st.Id);
+        
+            return View("PositionType", model);
         }
 
         [HttpGet]
-        [Route("getpositiontype")]
-        public ActionResult GetPositionType(Guid id)
+        public ActionResult CreatePositionType()
         {
-            return Ok(_positionTypeService.GetPositionType(id));
+            var model = new PositionTypeViewModel();
+
+            var serviceTypes = _serviceTypeService.GetAllAServiceTypes();
+            model.ServiceTypes = new MultiSelectList(serviceTypes, "Id", "Name");
+
+            return View(model);
         }
 
         [HttpPost]
-        [Route("create")]
-        public ActionResult CreatePositionType([FromBody] PositionTypeViewModel model)
+        public ActionResult CreatePositionType(PositionTypeViewModel model)
         {
-            try
-            {
-                var positionType =
-                    SimpleMapper.Mapper.Map<PositionTypeViewModel, MedicalExamination.BLL.PositionTypeModel>(model);
+            var positionType =
+                SimpleMapper.Mapper.Map<PositionTypeViewModel, MedicalExamination.BLL.PositionTypeModel>(model);
 
-                _positionTypeService.CreatePositionType(positionType);
+            positionType.ServiceTypes = model.SelectedServiceTypes.Select(s => new ServiceTypeModel {Id = s});
+            _positionTypeService.CreatePositionType(positionType);
 
-                return Ok();
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.InnerException.Message);
-            }
+            return RedirectToAction("GetPositionTypes");
         }
 
-        [HttpPut]
-        [Route("update")]
-        public ActionResult UpdatePositionType([FromBody] PositionTypeViewModel model)
+        [HttpPost]
+        public ActionResult UpdatePositionType(PositionTypeViewModel model)
         {
-            try
-            {
-                var positionType =
-                    SimpleMapper.Mapper.Map<PositionTypeViewModel, MedicalExamination.BLL.PositionTypeModel>(model);
-
-                _positionTypeService.UpdatePositionType(positionType);
-
-                return Ok();
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.InnerException.Message);
-            }
+            var positionType =
+                SimpleMapper.Mapper.Map<PositionTypeViewModel, MedicalExamination.BLL.PositionTypeModel>(model);
+            positionType.ServiceTypes = model.SelectedServiceTypes.Select(st => new ServiceTypeModel {Id = st});
+            _positionTypeService.UpdatePositionType(positionType);
+            return RedirectToAction("GetPositionTypes");
         }
 
-        [HttpDelete]
-        [Route("delete")]
-        public ActionResult DeletePositionType([FromBody] PositionTypeViewModel model)
+        [HttpGet]
+        public ActionResult DeletePositionType(Guid positionId)
         {
             try
             {
-                var positionType =
-                    SimpleMapper.Mapper.Map<PositionTypeViewModel, MedicalExamination.BLL.PositionTypeModel>(model);
+                var positionType = new PositionTypeModel {Id = positionId};
 
                 _positionTypeService.DeletePositionType(positionType);
 
-                return Ok();
+                return RedirectToAction("GetPositionTypes");
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                TempData["ErrorMessage"] = ex.Message;
+                return RedirectToAction("GetPositionTypes");
             }
         }
     }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using MedicalExamination.DAL;
 using MedicalExamination.Entities;
 
@@ -16,7 +17,7 @@ namespace MedicalExamination.BLL
 
         public IEnumerable<ServiceResult> GetAllServiceResults()
         {
-            return _serviceResultRepository.GetAll();
+            return _serviceResultRepository.GetAll().AsEnumerable();
         }
 
         public ServiceResult GetServiceResult(Guid id)

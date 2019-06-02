@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using MedicalExamination.DAL;
 using MedicalExamination.Entities;
 using SimpleMapper;
@@ -17,7 +18,7 @@ namespace MedicalExamination.BLL
 
         public IEnumerable<InsuranceCompanyModel> GetAllInsuranceCompanies()
         {
-            var insuranceCompanyModels = _insuranceCompanyTypeRepository.GetAll()
+            var insuranceCompanyModels = _insuranceCompanyTypeRepository.GetAll().AsEnumerable()
                 .Map<InsuranceCompanyType, InsuranceCompanyModel>();
 
             return insuranceCompanyModels;

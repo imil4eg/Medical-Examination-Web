@@ -34,9 +34,11 @@ namespace MedicalExamination.DAL
         /// Gets all values of entity
         /// </summary>
         /// <returns></returns>
-        public IEnumerable<TEntity> GetAll()
+        public IQueryable<TEntity> GetAll()
         {
-            return _entities.AsEnumerable();
+            var entities = _entities.AsQueryable();
+
+            return entities;
         }
 
         /// <summary>
@@ -46,7 +48,11 @@ namespace MedicalExamination.DAL
         /// <returns></returns>
         public TEntity GetById<TValue>(TValue id)
         {
-            return _entities.Find(id);
+            var entity = _entities.Find(id);
+
+            _context.Entry(entity).State = EntityState.Detached;
+
+            return entity;
         }
 
         /// <summary>
@@ -57,12 +63,14 @@ namespace MedicalExamination.DAL
         {
             var result = _entities.Add(entity);
             SaveChanges();
+
             return result.Entity;
         }
 
         public void Insert(IEnumerable<TEntity> entities)
         {
             _entities.AddRange(entities);
+            SaveChanges();
         }   
 
         /// <summary>
@@ -73,6 +81,13 @@ namespace MedicalExamination.DAL
         {
             _entities.Update(entity);
             SaveChanges();
+            _context.Entry(entity).State = EntityState.Detached;
+        }
+
+        public void Update(IEnumerable<TEntity> entities)
+        {
+            _entities.UpdateRange(entities);
+            SaveChanges();
         }
 
         /// <summary>
@@ -82,6 +97,14 @@ namespace MedicalExamination.DAL
         public void Delete(TEntity entity)
         {
             _entities.Remove(entity);
+            SaveChanges();
+            _context.Entry(entity).State = EntityState.Detached;
+        }
+
+        public void Delete(IEnumerable<TEntity> entities)
+        {
+            //_context.AttachRange(entities);
+            _entities.RemoveRange(entities);
             SaveChanges();
         }
 

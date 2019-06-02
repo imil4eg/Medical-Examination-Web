@@ -50,7 +50,7 @@ namespace MedicalExaminationWeb
         public string INN { get; set; }
 
         [DisplayName("СНИЛС")]
-        [StringLength(10, ErrorMessage = "Длина данного поля должна быть 12 символов", MinimumLength = 10)]
+        [StringLength(10, ErrorMessage = "Длина данного поля должна быть 10 символов", MinimumLength = 10)]
         public string SNILS { get; set; }
 
         [DisplayName("Место выдачи паспорта")]

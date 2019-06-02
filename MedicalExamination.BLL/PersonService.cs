@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using MedicalExamination.DAL;
 using MedicalExamination.Entities;
 
@@ -15,7 +16,7 @@ namespace MedicalExamination.BLL
 
         public IEnumerable<Person> GetAllPersons()
         {
-            return _personRepository.GetAll();
+            return _personRepository.GetAll().AsEnumerable();
         }
 
         public Person GetPerson(int id)

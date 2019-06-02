@@ -9,8 +9,9 @@ namespace MedicalExamination.BLL
     /// </summary>
     public interface IPositionTypeService
     {
-        IEnumerable<PositionType> GetAllPositionTypes();
-        PositionType GetPositionType(Guid id);
+        IEnumerable<PositionTypeModel> GetAllPositionTypes();
+        PositionTypeModel GetPositionType(Guid id);
+        IEnumerable<PositionTypeModel> GetPositionTypesByPositionIds(IEnumerable<Guid> positionId);
         void CreatePositionType(PositionTypeModel positionType);
         void UpdatePositionType(PositionTypeModel positionType);
         void DeletePositionType(PositionTypeModel positionType);

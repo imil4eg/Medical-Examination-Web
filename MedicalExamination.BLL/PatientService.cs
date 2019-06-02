@@ -22,9 +22,9 @@ namespace MedicalExamination.BLL
 
         public IEnumerable<PatientModel> GetAllPatients()
         {
-            var patients = _patientRepository.GetAll();
+            var patients = _patientRepository.GetAll().AsEnumerable();
 
-            var allPatients = patients as Patient[] ?? patients.ToArray();
+                var allPatients = patients.ToArray();
 
             var patientModels = new List<PatientModel>();
 

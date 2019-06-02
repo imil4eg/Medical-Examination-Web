@@ -11,6 +11,7 @@ namespace MedicalExamination.BLL
     {
         IEnumerable<Position> GetAllPositions();
         IEnumerable<Position> GetWorkerPositions(int id);
+        IEnumerable<PositionModel> GetWorkersOfSpecifiedPosition(Guid positionId);
         Position GetPosition(Guid id);
         void CreatePosition(PositionModel positionModel);
         void UpdatePosition(PositionModel positionModel);

@@ -2,18 +2,22 @@
 using System.Linq;
 using MedicalExamination.BLL;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using SimpleMapper;
 
 namespace MedicalExaminationWeb.Controllers
 {
-    [Route("api/[controller]")]
     public sealed class WorkerController : Controller
     {
         private readonly IWorkerService _workerService;
+        private readonly IPositionTypeService _positionTypeService;
+        private readonly IPassportIssuePlaceTypeService _passportIssuePlaceService;
 
-        public WorkerController(IWorkerService workerService)
+        public WorkerController(IWorkerService workerService, IPositionTypeService positionTypeService, IPassportIssuePlaceTypeService passportIssuePlaceService)
         {
             _workerService = workerService;
+            _positionTypeService = positionTypeService;
+            _passportIssuePlaceService = passportIssuePlaceService;
         }
 
         [HttpGet]
@@ -23,60 +27,109 @@ namespace MedicalExaminationWeb.Controllers
 
             var models = workers.Map<WorkerModel, WorkerViewModel>().ToArray();
 
-            for (int i = 1; i < workers.Length; i++)
+            for (int i = 0; i < models.Length; i++)
             {
                 models[i].Person = SimpleMapper.Mapper.Map<PersonModel, PersonViewModel>(workers[i].Person);
                 models[i].Positions = workers[i].Positions.Map<PositionModel, PositionViewModel>();
+                models[i].PositionTypes = workers[i].PositionTypes.Map<PositionTypeModel, PositionTypeViewModel>();
             }
 
             return View(models);
         }
 
         [HttpGet]
-        [Route("getworker")]
         public ActionResult GetWorker(int workerId)
         {
             var worker = _workerService.GetWorker(workerId);
 
-            return Ok(worker);
+            var model = SimpleMapper.Mapper.Map<WorkerModel, WorkerViewModel>(worker);
+            model.Person = SimpleMapper.Mapper.Map<PersonModel, PersonViewModel>(worker.Person);
+            model.Person.SelectedPassportIssuePlaceId = worker.Person.PassportIssuePlaceId;
+
+            var passportIssuePlaces = _passportIssuePlaceService.GetAllPassportIssuePlaces();
+            model.Person.PassportIssuePlaces = new SelectList(passportIssuePlaces, "Id", "Name");
+
+            model.PositionsList = new SelectList(_positionTypeService.GetAllPositionTypes(), "Id", "Name");
+            model.SelectedPosition = worker.Position;
+            
+
+            return View("Worker", model);
+        }
+
+        [HttpGet]
+        public ActionResult CreateWorker()
+        {
+            var worker = new WorkerViewModel
+            {
+                Person = new PersonViewModel()
+            };
+
+            var positions = _positionTypeService.GetAllPositionTypes();
+
+            worker.PositionsList = new SelectList(positions, "Id", "Name");
+            worker.SelectedPosition = positions.First().Id;
+
+            var passportIssuePlaces = _passportIssuePlaceService.GetAllPassportIssuePlaces();
+            worker.Person.PassportIssuePlaces = new SelectList(passportIssuePlaces, "Id", "Name");
+            worker.Person.SelectedPassportIssuePlaceId = passportIssuePlaces.First().Id;
+
+            return View("CreateWorker", worker);
         }
 
         [HttpPost]
-        [Route("create")]
-        public  ActionResult CreateWorker([FromBody] WorkerViewModel model)
+        [ValidateAntiForgeryToken]
+        public ActionResult CreateWorker(WorkerViewModel model)
         {
-            try
+
+            if (!ModelState.IsValid)
             {
-                var worker = SimpleMapper.Mapper.Map<WorkerViewModel, MedicalExamination.BLL.WorkerModel>(model);
-                worker.Person = SimpleMapper.Mapper.Map<PersonViewModel, MedicalExamination.BLL.PersonModel>(model.Person);
+                var positions = _positionTypeService.GetAllPositionTypes();
+
+                model.PositionsList = new SelectList(positions, "Id", "Name");
+                model.SelectedPosition = positions.First().Id;
+
+                var passportIssuePlaces = _passportIssuePlaceService.GetAllPassportIssuePlaces();
+                
+                model.Person.PassportIssuePlaces = new SelectList(passportIssuePlaces, "Id", "Name");
+
+                return View("CreateWorker", model);
+            }
+
+            var worker = SimpleMapper.Mapper.Map<WorkerViewModel, MedicalExamination.BLL.WorkerModel>(model);
+            worker.Person = SimpleMapper.Mapper.Map<PersonViewModel, MedicalExamination.BLL.PersonModel>(model.Person);
+            worker.Position = model.SelectedPosition;
+            worker.Person.PassportIssuePlaceId = model.Person.SelectedPassportIssuePlaceId;
 
                 _workerService.CreateWorker(worker);
 
-                return Ok();
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.InnerException.Message);
-            }
+            return RedirectToAction("Workers");
         }
 
-        [HttpPut]
-        [Route("update")]
-        public ActionResult UpdateWorker([FromBody] WorkerViewModel model)
+        [HttpPost]
+        public ActionResult UpdateWorker(WorkerViewModel model)
         {
-            try
+            if (!ModelState.IsValid)
             {
-                var worker = SimpleMapper.Mapper.Map<WorkerViewModel, MedicalExamination.BLL.WorkerModel>(model);
-                worker.Person = SimpleMapper.Mapper.Map<PersonViewModel, MedicalExamination.BLL.PersonModel>(model.Person); 
+                var positions = _positionTypeService.GetAllPositionTypes();
 
-                _workerService.UpdateWorker(worker);
+                model.PositionsList = new SelectList(positions, "Id", "Name");
+                model.SelectedPosition = positions.First().Id;
 
-                return Ok();
+                var passportIssuePlaces = _passportIssuePlaceService.GetAllPassportIssuePlaces();
+
+                model.Person.PassportIssuePlaces = new SelectList(passportIssuePlaces, "Id", "Name");
+
+                return View("Worker", model);
             }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.InnerException.Message);
-            }
+
+            var worker = SimpleMapper.Mapper.Map<WorkerViewModel, MedicalExamination.BLL.WorkerModel>(model);
+            worker.Person = SimpleMapper.Mapper.Map<PersonViewModel, MedicalExamination.BLL.PersonModel>(model.Person);
+            worker.Person.PassportIssuePlaceId = model.Person.SelectedPassportIssuePlaceId;
+            worker.Position = model.SelectedPosition;
+
+            _workerService.UpdateWorker(worker);
+
+            return RedirectToAction("Workers");
         }
 
         [HttpDelete]

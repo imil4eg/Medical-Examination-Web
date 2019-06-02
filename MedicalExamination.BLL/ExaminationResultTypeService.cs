@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using MedicalExamination.DAL;
 using MedicalExamination.Entities;
 
@@ -16,7 +17,7 @@ namespace MedicalExamination.BLL
 
         public IEnumerable<ExaminationResultType> GetAllExaminationResultTypes()
         {
-            return _examinationResultTypeRepository.GetAll();
+            return _examinationResultTypeRepository.GetAll().AsEnumerable();
         }
 
         public ExaminationResultType GetExaminationResultType(Guid id)

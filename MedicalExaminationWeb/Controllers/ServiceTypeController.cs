@@ -1,12 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Reflection;
 using MedicalExamination.BLL;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using SimpleMapper;
 
 namespace MedicalExaminationWeb.Controllers
@@ -34,7 +28,7 @@ namespace MedicalExaminationWeb.Controllers
             var service = _serviceTypeService.GetServiceType(serviceTypeId);
         
             var serviceModel = SimpleMapper.Mapper.Map<ServiceTypeModel, ServiceViewModel>(service);
-            serviceModel.Periodicity = GetDisplayNamesForProcedurePeriodicity();
+            serviceModel.Periodicity = EnumDisplayNamePicker.GetDisplayNames(typeof(ProcedurePeriodicity));
             serviceModel.SelectedPeriodicity = (int) service.Periodicity;
         
             return View(serviceModel);
@@ -44,7 +38,7 @@ namespace MedicalExaminationWeb.Controllers
         public ActionResult CreateServiceType()
         {
             var model = new ServiceViewModel();
-            model.Periodicity = GetDisplayNamesForProcedurePeriodicity();
+            model.Periodicity = EnumDisplayNamePicker.GetDisplayNames(typeof(ProcedurePeriodicity));
 
             return View(model);
         }
@@ -54,7 +48,7 @@ namespace MedicalExaminationWeb.Controllers
         {
             if (!ModelState.IsValid)
             {
-                model.Periodicity = GetDisplayNamesForProcedurePeriodicity();
+                model.Periodicity = EnumDisplayNamePicker.GetDisplayNames(typeof(ProcedurePeriodicity));
                 return View(model);
             }
 
@@ -99,19 +93,6 @@ namespace MedicalExaminationWeb.Controllers
 
                 return BadRequest(ex.Message);
             }
-        }
-
-        [NonAction]
-        private static SelectList GetDisplayNamesForProcedurePeriodicity()
-        {
-            var periodicityValues = Enum.GetValues(typeof(ProcedurePeriodicity));
-
-            var displayAttributes = new List<SelectListItem>();
-            foreach (var periodicityValue in periodicityValues)
-            {
-                displayAttributes.Add(new SelectListItem{Value = ((int)periodicityValue).ToString(), Text = ((ProcedurePeriodicity)(int)periodicityValue).GetDisplayName() });
-            }
-            return new SelectList(displayAttributes, "Value", "Text", displayAttributes.First().Value);
         }
     }
 }

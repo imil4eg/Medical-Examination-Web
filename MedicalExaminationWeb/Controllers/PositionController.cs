@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace MedicalExaminationWeb.Controllers
 {
-    [Route("api/[controller]")]
     public sealed class PositionController : ControllerBase
     {
         private readonly IPositionService _positionService;

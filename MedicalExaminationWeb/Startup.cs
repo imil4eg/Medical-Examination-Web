@@ -35,7 +35,7 @@ namespace MedicalExaminationWeb
 
             services.AddDbContext<MedicalExaminationContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("MedicalExaminationWeb"),
-                    b => b.MigrationsAssembly("MedicalExaminationWeb")));
+                    b => b.MigrationsAssembly("MedicalExaminationWeb")).UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking).EnableSensitiveDataLogging(true));
 
             services.AddIdentity<ApplicationUser, ApplicationRole>()
                 .AddEntityFrameworkStores<MedicalExaminationContext>()

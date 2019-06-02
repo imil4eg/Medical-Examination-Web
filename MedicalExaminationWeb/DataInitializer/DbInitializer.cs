@@ -162,6 +162,12 @@ namespace MedicalExaminationWeb
             var createdWorker = _context.Workers.Add(worker);
             _context.SaveChanges();
 
+            var position = new Position
+                { PositionId = new Guid("361A9CE3-F531-4D9B-9B95-08D6A4A5A29B"), WorkerId = worker.PersonId };
+
+            _context.Positions.Add(position);
+            _context.SaveChanges();
+
             var testUser = new ApplicationUser
             {
                 UserName = "Test",
