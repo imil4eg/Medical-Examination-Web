@@ -56,7 +56,7 @@ namespace MedicalExamination.BLL
 
         public IEnumerable<ProvideServiceModel> GetProvideServicesOfPosition(Guid positionId)
         {
-            var provideServicesOfPosition = _provideServiceRepository.GetAll().Where(ps => ps.PositionId == positionId)
+            var provideServicesOfPosition = _provideServiceRepository.GetAll().Where(ps => ps.PositionId == positionId).AsEnumerable()
                 .Map<ProvideService, ProvideServiceModel>();
 
             return provideServicesOfPosition;

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices.ComTypes;
 using System.Threading.Tasks;
 using FileReader;
 using MedicalExamination.DAL;
@@ -27,16 +28,17 @@ namespace MedicalExaminationWeb
         public async Task Initialize()
         {
             //_context.Database.EnsureCreated();
-            InitPassportIssuePlaceType();
-            InitInsuranceCompanyType();
-            await InitRoles();
-            await InitUsers();
-            InitPatients();
-            InitServiceType();
-            InitWorker();
-            InitProvideService();
-            InitPositionType();
-            InitPosition();
+            InitDiseaseOutcomeTypes();
+            //InitPassportIssuePlaceType();
+            //InitInsuranceCompanyType();
+            //await InitRoles();
+            //await InitUsers();
+            //InitPatients();
+            //InitServiceType();
+            //InitWorker();
+            //InitProvideService();
+            //InitPositionType();
+            //InitPosition();
         }
 
         private void InitPosition()
@@ -91,6 +93,20 @@ namespace MedicalExaminationWeb
 
             _context.Workers.Add(worker);
 
+            _context.SaveChanges();
+        }
+
+        private void InitDiseaseOutcomeTypes()
+        {
+            if(_context.DiseaseOutcomeTypes.Any())
+                return;
+
+            var diseaseOutcome1 = new DiseaseOutcomeType {Name = "Выздоровление полное и неполное"};
+            var diseaseOutcomet2 = new DiseaseOutcomeType {Name = "Переход в хроническую форму"};
+            var diseaseOutcome3 = new DiseaseOutcomeType {Name = "Смерть"};
+
+            _context.DiseaseOutcomeTypes.AddRange(new DiseaseOutcomeType[]
+                {diseaseOutcome1, diseaseOutcomet2, diseaseOutcome3});
             _context.SaveChanges();
         }
 

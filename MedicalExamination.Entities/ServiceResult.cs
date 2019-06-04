@@ -17,6 +17,10 @@ namespace MedicalExamination.Entities
         [ForeignKey("ServiceTypeId")]
         public ServiceType ServiceType { get; set; }
 
+        public int WorkerId { get; set; }
+        [ForeignKey("WorkerId")]
+        public Worker Worker { get; set; }
+
         public string Result { get; set; }
 
         public string TubeNumber { get; set; }

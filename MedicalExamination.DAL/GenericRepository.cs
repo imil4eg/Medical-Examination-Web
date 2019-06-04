@@ -34,9 +34,9 @@ namespace MedicalExamination.DAL
         /// Gets all values of entity
         /// </summary>
         /// <returns></returns>
-        public IQueryable<TEntity> GetAll()
+        public IEnumerable<TEntity> GetAll()
         {
-            var entities = _entities.AsQueryable();
+            var entities = _entities.AsEnumerable();
 
             return entities;
         }

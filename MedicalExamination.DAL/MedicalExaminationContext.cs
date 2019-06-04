@@ -47,12 +47,13 @@ namespace MedicalExamination.DAL
             base.OnModelCreating(modelBuilder);
             
             modelBuilder.Entity<Worker>().HasKey(w => w.PersonId);
+            modelBuilder.Entity<Worker>().HasOne(p => p.Person).WithOne().OnDelete(DeleteBehavior.Restrict);
             modelBuilder.Entity<ApplicationUser>().HasOne(u => u.Worker).WithOne();
             modelBuilder.Entity<Patient>().HasOne(p => p.Person).WithOne().OnDelete(DeleteBehavior.Restrict);
             modelBuilder.Entity<Appointment>().HasOne(p => p.Patient).WithOne().OnDelete(DeleteBehavior.Restrict);
             modelBuilder.Entity<ProvideService>().HasOne(p => p.Position);
             modelBuilder.Entity<ProvideService>().HasKey(p => p.Id);
-
+            modelBuilder.Entity<ServiceResult>().HasOne(p => p.Worker).WithOne().OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

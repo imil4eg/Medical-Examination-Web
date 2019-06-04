@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace MedicalExaminationWeb
 {
@@ -20,5 +21,9 @@ namespace MedicalExaminationWeb
         public string TubeNumber { get; set; }
 
         public string Description { get; set; }
+
+        [DisplayName("Рабочий")]
+        public SelectList Workers { get; set; }
+        public int WorkerId { get; set; }
     }
 }

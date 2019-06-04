@@ -17,14 +17,16 @@ namespace MedicalExaminationWeb
 
         public WorkerViewModel Worker { get; set; }
 
-        [DisplayName("Врачи")]
+        [DisplayName("Врач принимающий случай")]
         public SelectList Workers { get; set; }
-        public int SelectedWorkerId { get; set; }
+        public int WorkerId { get; set; }
 
         public PatientViewModel Patient { get; set; }
 
-        public DiseaseOutcomeModel Outcome { get; set; }
-
+        [DisplayName("Исход случая")]
+        public SelectList Outcomes { get; set; }
+        public Guid OutcomeId { get; set; }
+        
         public ExaminationResultModel ExaminationResult { get; set; }
 
         public DateTime EndDate { get; set; }

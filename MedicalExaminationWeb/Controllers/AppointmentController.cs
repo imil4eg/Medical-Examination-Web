@@ -15,13 +15,17 @@ namespace MedicalExaminationWeb.Controllers
         private readonly IPatientService _patientService;
         private readonly IWorkerService _workerService;
         private readonly IServiceTypeService _serviceTypeService;
+        private readonly IDiseaseOutcomeTypeService _diseaseOutcomeTypeService;
 
-        public AppointmentController(IAppointmentService appointmentService, IPatientService patientService, IWorkerService workerService, IServiceTypeService serviceTypeService)
+        public AppointmentController(IAppointmentService appointmentService, IPatientService patientService,
+            IWorkerService workerService, IServiceTypeService serviceTypeService,
+            IDiseaseOutcomeTypeService diseaseOutcomeTypeService)
         {
             _appointmentService = appointmentService;
             _patientService = patientService;
             _workerService = workerService;
             _serviceTypeService = serviceTypeService;
+            _diseaseOutcomeTypeService = diseaseOutcomeTypeService;
         }
 
         [HttpGet]
@@ -48,6 +52,10 @@ namespace MedicalExaminationWeb.Controllers
             var appointmentModel = new AppointmentViewModel();
             appointmentModel.Patient = patientModel;
 
+            var outcomes = _diseaseOutcomeTypeService.GetAllDiseaseOutcomeTypes();
+            appointmentModel.Outcomes  = new SelectList(outcomes, "Id", "Name");
+            appointmentModel.OutcomeId = outcomes.First().Id;
+
             var workers = _workerService.GetAllWorkers().ToArray();
 
             var workerModels = workers.Map<WorkerModel, WorkerViewModel>().ToArray();
@@ -60,20 +68,21 @@ namespace MedicalExaminationWeb.Controllers
                 workerModels[i].PersonId = workers[i].PersonId;
             }
 
-            appointmentModel.Workers = new SelectList(workerModels, "PersonId", "Name", workerModels[0].PersonId);
+            appointmentModel.Workers = new SelectList(workerModels, "PersonId", "FullName");
+            appointmentModel.WorkerId = workerModels[0].PersonId;
 
             var serviceTypes =
                 _serviceTypeService.GetAllServicesForPerson((int) patientModel.Person.Gender, patientModel.Person.BirthDate)
                     .Map<ServiceTypeModel, ServiceViewModel>();
 
             var serviceResults = serviceTypes.Select(serviceType => new ServiceResultModel
-                {Service = serviceType, ServiceTypeId = serviceType.Id,}).ToList();
+            {
+                Service = serviceType, ServiceTypeId = serviceType.Id,
+                Workers = new SelectList(workerModels, "PersonId", "FullName", workerModels[0].PersonId)
+            }).ToList();
 
             appointmentModel.ServicesResults = serviceResults;
 
-            if (DateTime.Today.Year - patient.Person.BirthDate.Year > 75)
-                appointmentModel.QuestionnaireAfter75 = new QuestionnaireAfter75();
-            else
                 appointmentModel.QuestionnaireTill75 = new QuestionnaireTill75ViewModel
                 {
                     QuestionSeven = EnumDisplayNamePicker.GetDisplayNames(typeof(QuestionSevenAnswers)),
@@ -90,34 +99,22 @@ namespace MedicalExaminationWeb.Controllers
         [HttpPost]
         public ActionResult CreateAppointment(AppointmentViewModel model)
         {
-            try
-            {
-                var appointment =
-                    SimpleMapper.Mapper.Map<AppointmentViewModel, MedicalExamination.BLL.AppointmentModel>(model);
-                appointment.Patient =
-                    SimpleMapper.Mapper.Map<PatientViewModel, MedicalExamination.BLL.PatientModel>(model.Patient);
-                appointment.Worker =
-                    SimpleMapper.Mapper.Map<WorkerViewModel, MedicalExamination.BLL.WorkerModel>(model.Worker);
-                appointment.ServicesResults = model.ServicesResults.Select(sr =>
-                    SimpleMapper.Mapper.Map<ServiceResultModel, MedicalExamination.BLL.ServiceResultModel>(sr));
+            var appointment =
+                SimpleMapper.Mapper.Map<AppointmentViewModel, MedicalExamination.BLL.AppointmentModel>(model);
+            appointment.Patient =
+                SimpleMapper.Mapper.Map<PatientViewModel, MedicalExamination.BLL.PatientModel>(model.Patient);
+            appointment.Worker = new WorkerModel {PersonId = model.WorkerId};
+            appointment.ServicesResults = model.ServicesResults.Select(sr =>
+                SimpleMapper.Mapper.Map<ServiceResultModel, MedicalExamination.BLL.ServiceResultModel>(sr));    
+            appointment.QuestionnaireTill75 =
+                SimpleMapper.Mapper.Map<QuestionnaireTill75ViewModel, QuestionnaireTill75>(model.QuestionnaireTill75);
 
-                if (model.QuestionnaireAfter75 != null)
-                {
-                    appointment.QuestionnaireAfter75 = model.QuestionnaireAfter75;
-                }
-                else
-                {
-                    appointment.QuestionnaireTill75 = new QuestionnaireTill75();
-                }
+            appointment.Outcome = new MedicalExamination.BLL.DiseaseOutcomeModel {Id = model.OutcomeId};
+            appointment.Worker = new WorkerModel {PersonId = model.WorkerId};
 
-                this._appointmentService.CreateAppointment(appointment);
+            this._appointmentService.CreateAppointment(appointment);
 
-                return Ok();
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            return Ok();
         }
 
         [HttpPut]

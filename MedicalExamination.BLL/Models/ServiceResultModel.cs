@@ -15,5 +15,7 @@ namespace MedicalExamination.BLL
         public string TubeNumber { get; set; }
 
         public string Description { get; set; }
+
+        public int WorkerId { get; set; }
     }
 }

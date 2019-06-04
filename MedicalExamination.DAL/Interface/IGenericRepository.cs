@@ -9,7 +9,7 @@ namespace MedicalExamination.DAL
     /// <typeparam name="TEntity"></typeparam>
     public interface IGenericRepository<TEntity> : IRepository where TEntity : class
     {
-        IQueryable<TEntity> GetAll();
+        IEnumerable<TEntity> GetAll();
         TEntity GetById<TValue>(TValue id);
         TEntity Insert(TEntity entity);
         void Insert(IEnumerable<TEntity> entities);

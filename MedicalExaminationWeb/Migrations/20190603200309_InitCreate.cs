@@ -2,7 +2,7 @@
 
 namespace MedicalExaminationWeb.Migrations
 {
-    public partial class Test : Migration
+    public partial class InitCreate : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

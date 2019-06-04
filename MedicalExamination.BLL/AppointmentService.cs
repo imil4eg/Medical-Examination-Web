@@ -41,30 +41,25 @@ namespace MedicalExamination.BLL
         {
             var appointment = new Appointment();
             appointment.PatientId = appointmentModel.Patient.PersonId;
-            appointment.WorkerId = appointment.WorkerId;
-            appointment.EndDate = appointmentModel.EndDate;
-            appointment.ExaminationResultId = appointmentModel.ExaminationResult.Id;
+            appointment.EndDate = DateTime.Today;//appointmentModel.EndDate;
+            //appointment.ExaminationResultId = appointmentModel.ExaminationResult.Id;
             appointment.DiseaseOutcomeTypeId = appointmentModel.Outcome.Id;
+            appointment.WorkerId = appointmentModel.Worker.PersonId;
 
             Appointment createdAppointment = _appointmentRepository.Insert(appointment);
 
-            if (DateTime.Today.AddYears(-appointmentModel.Patient.Person.BirthDate.Year).Year > 75)
-            {
-                QuestionnaireAfter75 questionnaireAfter75 = appointmentModel.QuestionnaireAfter75;
-                questionnaireAfter75.AppointmentId = createdAppointment.Id;
-
-                this._questionnaireAfter75Repository.Insert(questionnaireAfter75);
-            }
-            else
-            {
                 QuestionnaireTill75 questionnaireTill75 = appointmentModel.QuestionnaireTill75;
                 questionnaireTill75.AppointmentId = createdAppointment.Id;
 
                 this._questionnaireTill75Repository.Insert(questionnaireTill75);
-            }
 
             var examinationResults = appointmentModel.ServicesResults.Select(serviceResult =>
-                SimpleMapper.Mapper.Map<ServiceResultModel, ServiceResult>(serviceResult));
+                new ServiceResult
+                {
+                    AppointmentId = createdAppointment.Id, ServiceTypeId = serviceResult.ServiceTypeId,
+                    Result = serviceResult.Result, TubeNumber = serviceResult.TubeNumber,
+                    WorkerId = serviceResult.WorkerId, Description = serviceResult.Description
+                });
 
             _serviceResultRepository.Insert(examinationResults);
             //_appointmentRepository.Insert(appointment);

@@ -75,6 +75,19 @@ namespace MedicalExamination.BLL
 
             var existingProvideServices = _provideServiceService.GetProvideServicesOfPosition(positionTypeModel.Id);
 
+            var unselectedExistingProvideService = existingProvideServices.Where(eps =>
+                positionTypeModel.ServiceTypes.Any(st => st.Id != eps.ServiceId));
+            //.Select(ps => new ProvideService {Id = ps.Id, PositionId = ps.PositionId, ServiceId = ps.ServiceId}).ToArray();
+
+            var provideServices = _provideServiceService.GetAllProvideServices().AsEnumerable();
+            var unselectedProvideServices = provideServices
+                .Where(p => unselectedExistingProvideService.Any(ps => ps.Id == p.Id)).ToArray();
+
+            if (unselectedProvideServices.Length > 0)
+            {
+                _provideServiceRepository.Delete(unselectedProvideServices);
+            }
+
             var notExistingProvideServices =
                 positionTypeModel.ServiceTypes.Where(st => existingProvideServices.All(pd => pd.ServiceId != st.Id));
 
@@ -84,21 +97,6 @@ namespace MedicalExamination.BLL
             if (newProvideServices.Count > 0)
             {
                 _provideServiceRepository.Insert(newProvideServices);
-            }
-
-            var unselectedExistingProvideService = existingProvideServices.Where(eps =>
-                    positionTypeModel.ServiceTypes.Any(st => st.Id != eps.ServiceId))
-                .Select(ps => new ProvideService {Id = ps.Id, PositionId = ps.PositionId, ServiceId = ps.ServiceId}).ToArray();
-
-            foreach (var provideService in unselectedExistingProvideService)
-            {
-                provideService.Position = _positionTypeRepository.GetById(provideService.PositionId);
-                provideService.Service = _serviceTypeRepository.GetById(provideService.ServiceId);
-            }
-
-            if (unselectedExistingProvideService.Length > 0)
-            {
-                _provideServiceRepository.Delete(unselectedExistingProvideService);
             }
         }
 
