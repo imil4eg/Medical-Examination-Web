@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace MedicalExaminationWeb
 {
-    public class ServiceResultModel
+    public class ServiceResultViewModel
     {
         public Guid Id { get; set; }
 

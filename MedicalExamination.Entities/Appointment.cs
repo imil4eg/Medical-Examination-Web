@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MedicalExamination.Entities
 {
-    public sealed class Appointment
+    public class Appointment
     {
         [Key]
         public Guid Id { get; set; }
@@ -12,12 +12,12 @@ namespace MedicalExamination.Entities
         [Required]
         public int WorkerId { get; set; }
         [ForeignKey("WorkerId")]
-        public Worker Worker { get; set; }
+        public virtual Worker Worker { get; set; }
 
         [Required]
         public int PatientId { get; set; }
         [ForeignKey("PatientId")]
-        public Patient Patient { get; set; }
+        public virtual Patient Patient { get; set; }
 
         //[Required]
         //public Guid ExaminationResultId { get; set; }
@@ -27,7 +27,7 @@ namespace MedicalExamination.Entities
         [Required]
         public Guid DiseaseOutcomeTypeId { get; set; }
         [ForeignKey("DiseaseOutcomeTypeId")]
-        public DiseaseOutcomeType DiseaseOutcomeType { get; set; }
+        public virtual DiseaseOutcomeType DiseaseOutcomeType { get; set; }
 
         [Required]
         public DateTime EndDate { get; set; }

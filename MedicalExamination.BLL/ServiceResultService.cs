@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using MedicalExamination.DAL;
 using MedicalExamination.Entities;
+using SimpleMapper;
 
 namespace MedicalExamination.BLL
 {
@@ -18,6 +19,12 @@ namespace MedicalExamination.BLL
         public IEnumerable<ServiceResult> GetAllServiceResults()
         {
             return _serviceResultRepository.GetAll().AsEnumerable();
+        }
+
+        public IEnumerable<ServiceResultModel> GetServiceResultsOfAppointment(Guid appointmentId)
+        {
+            return _serviceResultRepository.GetAll().AsEnumerable().Where(r => r.AppointmentId == appointmentId)
+                .Map<ServiceResult, ServiceResultModel>();
         }
 
         public ServiceResult GetServiceResult(Guid id)

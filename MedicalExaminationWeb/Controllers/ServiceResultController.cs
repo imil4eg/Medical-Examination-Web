@@ -29,12 +29,12 @@ namespace MedicalExaminationWeb.Controllers
 
         [HttpPost]
         [Route("create")]
-        public ActionResult CreateServiceResult(ServiceResultModel model)
+        public ActionResult CreateServiceResult(ServiceResultViewModel model)
         {
             try
             {
                 var serviceResult =
-                    SimpleMapper.Mapper.Map<ServiceResultModel, MedicalExamination.BLL.ServiceResultModel>(model);
+                    SimpleMapper.Mapper.Map<ServiceResultViewModel, MedicalExamination.BLL.ServiceResultModel>(model);
 
                 this._serviceResultService.CreateServiceResult(serviceResult);
 
@@ -48,12 +48,12 @@ namespace MedicalExaminationWeb.Controllers
 
         [HttpPut]
         [Route("update")]
-        public ActionResult UpdateServiceResult(ServiceResultModel model)
+        public ActionResult UpdateServiceResult(ServiceResultViewModel model)
         {
             try
             {
                 var serviceResult =
-                    SimpleMapper.Mapper.Map<ServiceResultModel, MedicalExamination.BLL.ServiceResultModel>(model);
+                    SimpleMapper.Mapper.Map<ServiceResultViewModel, MedicalExamination.BLL.ServiceResultModel>(model);
 
                 this._serviceResultService.UpdateServiceResult(serviceResult);
 
@@ -67,12 +67,12 @@ namespace MedicalExaminationWeb.Controllers
         
         [HttpDelete]
         [Route("delete")]
-        public ActionResult DeleteServiceResult(ServiceResultModel model)
+        public ActionResult DeleteServiceResult(ServiceResultViewModel model)
         {
             try
             {
                 var serviceResult =
-                    SimpleMapper.Mapper.Map<ServiceResultModel, MedicalExamination.BLL.ServiceResultModel>(model);
+                    SimpleMapper.Mapper.Map<ServiceResultViewModel, MedicalExamination.BLL.ServiceResultModel>(model);
 
                 this._serviceResultService.DeleteServiceResult(serviceResult);
 

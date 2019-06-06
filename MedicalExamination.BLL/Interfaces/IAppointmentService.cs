@@ -10,7 +10,7 @@ namespace MedicalExamination.BLL
     public interface IAppointmentService
     {
         IEnumerable<Appointment> GetAllAppointments();
-        Appointment GetAppointment(Guid id);
+        AppointmentModel GetAppointment(Guid id);
         void CreateAppointment(AppointmentModel appointmentModel);
         void UpdateAppointment(AppointmentModel appointmentModel);
         void DeleteAppointment(AppointmentModel appointmentModel);

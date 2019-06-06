@@ -31,7 +31,7 @@ namespace MedicalExaminationWeb
 
         public DateTime EndDate { get; set; }
 
-        public IList<ServiceResultModel> ServicesResults { get; set; }
+        public IList<ServiceResultViewModel> ServicesResults { get; set; }
 
         public QuestionnaireAfter75 QuestionnaireAfter75 { get; set; }
 

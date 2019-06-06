@@ -14,14 +14,17 @@ namespace MedicalExaminationWeb.Controllers
         private readonly IPatientService _patientService;
         private readonly IPassportIssuePlaceTypeService _passportIssuePlaceService;
         private readonly IInsuranceCompanyTypeService _insuranceCompanyService;
+        private readonly IWorkerService _workerService;
 
         public PatientController(IPatientService patientService,
             IPassportIssuePlaceTypeService passportIssuePlaceService,
-            IInsuranceCompanyTypeService insuranceCompanyService)
+            IInsuranceCompanyTypeService insuranceCompanyService,
+            IWorkerService workerService)
         {
             _patientService = patientService;
             _passportIssuePlaceService = passportIssuePlaceService;
             _insuranceCompanyService = insuranceCompanyService;
+            _workerService = workerService;
         }
 
         [HttpGet]
@@ -57,7 +60,28 @@ namespace MedicalExaminationWeb.Controllers
             patientModel.SelectedInsuranceCompanyId = patient.InsuranceCompanyId;
             patientModel.Person.SelectedPassportIssuePlaceId = patient.Person.PassportIssuePlaceId;
 
-            patientModel.Appointments = patient.Appointments.Map<AppointmentModel, AppointmentViewModel>();
+            var appointments = patient.Appointments.ToList();
+
+            patientModel.Appointments = appointments.Map<AppointmentModel, AppointmentViewModel>();
+
+            var appointmentModels = new List<AppointmentViewModel>(appointments.Count);
+
+            foreach (var appointment in appointments)
+            {
+                var appointmentViewModel =
+                    SimpleMapper.Mapper.Map<AppointmentModel, AppointmentViewModel>(appointment);
+
+                appointmentViewModel.Worker = new WorkerViewModel
+                {
+                    Person = SimpleMapper.Mapper.Map<PersonModel, PersonViewModel>(appointment.Worker.Person),
+                    PersonId = appointment.Worker.PersonId
+                };
+
+                appointmentModels.Add(appointmentViewModel);
+            }
+
+            patientModel.Appointments = appointmentModels;
+
 
             return View("PatientProfile", patientModel);
         }

@@ -6,6 +6,8 @@ namespace MedicalExamination.BLL
 {
     public sealed class AppointmentModel
     {
+        public Guid Id { get; set; }
+
         public WorkerModel Worker { get; set; }
 
         public PatientModel Patient { get; set; }

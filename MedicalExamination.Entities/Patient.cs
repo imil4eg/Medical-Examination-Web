@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -18,5 +19,7 @@ namespace MedicalExamination.Entities
         public Guid InsuranceCompanyId { get; set; }
         [ForeignKey("InsuranceCompanyId")]
         public InsuranceCompanyType InsuranceCompany { get; set; }
+
+        public ICollection<Appointment> Appointments { get; set; }
     }
 }

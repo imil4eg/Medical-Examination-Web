@@ -10,6 +10,7 @@ namespace MedicalExamination.BLL
     public interface IServiceResultService
     {
         IEnumerable<ServiceResult> GetAllServiceResults();
+        IEnumerable<ServiceResultModel> GetServiceResultsOfAppointment(Guid appointmentId);
         ServiceResult GetServiceResult(Guid id);
         void CreateServiceResult(ServiceResultModel serviceResult);
         void UpdateServiceResult(ServiceResultModel serviceResult);

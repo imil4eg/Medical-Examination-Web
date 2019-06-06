@@ -37,7 +37,58 @@ namespace MedicalExaminationWeb.Controllers
         [HttpGet]
         public ActionResult GetAppointment(Guid appointmentId)
         {
-            return Ok(this._appointmentService.GetAppointment(appointmentId));
+            var appointment = this._appointmentService.GetAppointment(appointmentId);
+
+            var appointmentViewModel = SimpleMapper.Mapper.Map<AppointmentModel, AppointmentViewModel>(appointment);
+
+            appointmentViewModel.OutcomeId = appointment.Outcome.Id;
+            appointmentViewModel.Outcomes = this.FullFillOutcomes();
+
+            appointmentViewModel.Patient = new PatientViewModel
+            {
+                Person = SimpleMapper.Mapper.Map<PersonModel, PersonViewModel>(appointment.Patient.Person),
+                PersonId = appointment.Patient.PersonId
+            };
+
+            appointmentViewModel.QuestionnaireTill75 =
+                SimpleMapper.Mapper.Map<QuestionnaireTill75, QuestionnaireTill75ViewModel>(appointment
+                    .QuestionnaireTill75);
+
+            appointmentViewModel.Worker = new WorkerViewModel
+            {
+                PersonId = appointment.Worker.PersonId,
+                Person = SimpleMapper.Mapper.Map<PersonModel, PersonViewModel>(appointment.Worker.Person)
+            };
+
+            var workers = _workerService.GetAllWorkers().ToArray();
+
+            var workerModels = workers.Map<WorkerModel, WorkerViewModel>().ToArray();
+            for (int i = 0; i < workerModels.Length; i++)
+            {
+                workerModels[i].Person = SimpleMapper.Mapper.Map<PersonModel, PersonViewModel>(workers[i].Person);
+                workerModels[i].FullName =
+                    string.Format(
+                        $"{workers[i].Person.LastName} {workers[i].Person.FirstName} {workers[i].Person.MiddleName}");
+                workerModels[i].PersonId = workers[i].PersonId;
+            }
+
+            appointmentViewModel.ServicesResults = appointment.ServicesResults.Select(serviceType => new ServiceResultViewModel
+            {
+                Service = SimpleMapper.Mapper.Map<ServiceResultModel, ServiceViewModel>(serviceType),
+                ServiceTypeId = serviceType.Id,
+                Workers = new SelectList(workerModels, "PersonId", "FullName", workerModels[0].PersonId)
+            }).ToList();
+
+            appointmentViewModel.QuestionnaireTill75 = new QuestionnaireTill75ViewModel
+            {
+                QuestionSeven = EnumDisplayNamePicker.GetDisplayNames(typeof(QuestionSevenAnswers)),
+                QuestionTwentyOne = EnumDisplayNamePicker.GetDisplayNames(typeof(QuestionTwentyOneAnswers)),
+                QuestionTwentyFive = EnumDisplayNamePicker.GetDisplayNames(typeof(QuestionTwentyFiveAnswers)),
+                QuestionTwentySix = EnumDisplayNamePicker.GetDisplayNames(typeof(QuestionTwentySixAnswers)),
+                QuestionTwentySeven = EnumDisplayNamePicker.GetDisplayNames(typeof(QuestionTwentySevenAnswers))
+            };
+
+            return View("Appointment", appointmentViewModel);
         }
 
         [HttpGet]
@@ -75,7 +126,7 @@ namespace MedicalExaminationWeb.Controllers
                 _serviceTypeService.GetAllServicesForPerson((int) patientModel.Person.Gender, patientModel.Person.BirthDate)
                     .Map<ServiceTypeModel, ServiceViewModel>();
 
-            var serviceResults = serviceTypes.Select(serviceType => new ServiceResultModel
+            var serviceResults = serviceTypes.Select(serviceType => new ServiceResultViewModel
             {
                 Service = serviceType, ServiceTypeId = serviceType.Id,
                 Workers = new SelectList(workerModels, "PersonId", "FullName", workerModels[0].PersonId)
@@ -105,7 +156,7 @@ namespace MedicalExaminationWeb.Controllers
                 SimpleMapper.Mapper.Map<PatientViewModel, MedicalExamination.BLL.PatientModel>(model.Patient);
             appointment.Worker = new WorkerModel {PersonId = model.WorkerId};
             appointment.ServicesResults = model.ServicesResults.Select(sr =>
-                SimpleMapper.Mapper.Map<ServiceResultModel, MedicalExamination.BLL.ServiceResultModel>(sr));    
+                SimpleMapper.Mapper.Map<ServiceResultViewModel, MedicalExamination.BLL.ServiceResultModel>(sr));    
             appointment.QuestionnaireTill75 =
                 SimpleMapper.Mapper.Map<QuestionnaireTill75ViewModel, QuestionnaireTill75>(model.QuestionnaireTill75);
 
@@ -129,7 +180,7 @@ namespace MedicalExaminationWeb.Controllers
                 appointment.Worker =
                     SimpleMapper.Mapper.Map<WorkerViewModel, MedicalExamination.BLL.WorkerModel>(model.Worker);
                 appointment.ServicesResults = model.ServicesResults.Select(sr =>
-                    SimpleMapper.Mapper.Map<ServiceResultModel, MedicalExamination.BLL.ServiceResultModel>(sr));
+                    SimpleMapper.Mapper.Map<ServiceResultViewModel, MedicalExamination.BLL.ServiceResultModel>(sr));
 
                 if (model.QuestionnaireAfter75 != null)
                 {
@@ -162,7 +213,7 @@ namespace MedicalExaminationWeb.Controllers
                 appointment.Worker =
                     SimpleMapper.Mapper.Map<WorkerViewModel, MedicalExamination.BLL.WorkerModel>(model.Worker);
                 appointment.ServicesResults = model.ServicesResults.Select(sr =>
-                    SimpleMapper.Mapper.Map<ServiceResultModel, MedicalExamination.BLL.ServiceResultModel>(sr));
+                    SimpleMapper.Mapper.Map<ServiceResultViewModel, MedicalExamination.BLL.ServiceResultModel>(sr));
 
                 if (model.QuestionnaireAfter75 != null)
                 {
@@ -181,6 +232,14 @@ namespace MedicalExaminationWeb.Controllers
             {
                 return BadRequest(ex.Message);
             }
+        }
+
+        [NonAction]
+        private SelectList FullFillOutcomes()
+        {
+            var diseaseOutcomes = _diseaseOutcomeTypeService.GetAllDiseaseOutcomeTypes();
+
+            return new SelectList(diseaseOutcomes, "Id", "Name");
         }
     }
 }

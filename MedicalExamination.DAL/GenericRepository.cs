@@ -50,8 +50,6 @@ namespace MedicalExamination.DAL
         {
             var entity = _entities.Find(id);
 
-            _context.Entry(entity).State = EntityState.Detached;
-
             return entity;
         }
 
@@ -61,6 +59,7 @@ namespace MedicalExamination.DAL
         /// <param name="entity"></param>
         public TEntity Insert(TEntity entity)
         {
+            _context.Attach(entity);
             var result = _entities.Add(entity);
             SaveChanges();
 
@@ -81,7 +80,6 @@ namespace MedicalExamination.DAL
         {
             _entities.Update(entity);
             SaveChanges();
-            _context.Entry(entity).State = EntityState.Detached;
         }
 
         public void Update(IEnumerable<TEntity> entities)

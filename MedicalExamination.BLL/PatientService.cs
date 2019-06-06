@@ -50,8 +50,20 @@ namespace MedicalExamination.BLL
             patientModel.Person =
                 SimpleMapper.Mapper.Map<Person, PersonModel>(_personRepository.GetById(patient.PersonId));
 
-            patientModel.Appointments = _appointmentRepository.GetAll().Where(a => a.PatientId == patient.PersonId)
-                .Map<Appointment, AppointmentModel>();
+            var appointments = _appointmentRepository.GetAll().Where(a => a.PatientId == patient.PersonId);
+
+            patientModel.Appointments = (from appointment in appointments
+                let workerPerson = _personRepository.GetById(appointment.WorkerId)
+                select new AppointmentModel
+                {
+                    Id = appointment.Id,
+                    Worker = new WorkerModel
+                    {
+                        PersonId = appointment.WorkerId,
+                        Person = SimpleMapper.Mapper.Map<Person, PersonModel>(workerPerson)
+                    },
+                    EndDate = appointment.EndDate
+                }).ToList();
 
             return patientModel;
         }

@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MedicalExaminationWeb.Migrations
 {
     [DbContext(typeof(MedicalExaminationContext))]
-    [Migration("20190603205048_RemovedFieldFromAppointment")]
-    partial class RemovedFieldFromAppointment
+    [Migration("20190606210011_InitCreate")]
+    partial class InitCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -122,8 +122,7 @@ namespace MedicalExaminationWeb.Migrations
 
                     b.HasIndex("DiseaseOutcomeTypeId");
 
-                    b.HasIndex("PatientId")
-                        .IsUnique();
+                    b.HasIndex("PatientId");
 
                     b.HasIndex("WorkerId");
 
@@ -473,8 +472,7 @@ namespace MedicalExaminationWeb.Migrations
 
                     b.HasIndex("ServiceTypeId");
 
-                    b.HasIndex("WorkerId")
-                        .IsUnique();
+                    b.HasIndex("WorkerId");
 
                     b.ToTable("ServiceResult");
                 });
@@ -610,8 +608,8 @@ namespace MedicalExaminationWeb.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("MedicalExamination.Entities.Patient", "Patient")
-                        .WithOne()
-                        .HasForeignKey("MedicalExamination.Entities.Appointment", "PatientId")
+                        .WithMany("Appointments")
+                        .HasForeignKey("PatientId")
                         .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("MedicalExamination.Entities.Worker", "Worker")
@@ -696,8 +694,8 @@ namespace MedicalExaminationWeb.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("MedicalExamination.Entities.Worker", "Worker")
-                        .WithOne()
-                        .HasForeignKey("MedicalExamination.Entities.ServiceResult", "WorkerId")
+                        .WithMany()
+                        .HasForeignKey("WorkerId")
                         .OnDelete(DeleteBehavior.Restrict);
                 });
 
