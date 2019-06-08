@@ -43,6 +43,11 @@ namespace MedicalExaminationWeb.Controllers
                 patientModels.Add(patientModel);
             }
 
+            if (TempData.ContainsKey("ErrorMessage"))
+            {
+                ModelState.AddModelError("", TempData["ErrorMessage"] as string);
+            }
+
             return View(patientModels);
         }
 
@@ -135,12 +140,33 @@ namespace MedicalExaminationWeb.Controllers
             }
 
             var patientModel = SimpleMapper.Mapper.Map<PatientViewModel, MedicalExamination.BLL.PatientModel>(model);
+            patientModel.InsuranceCompanyId = model.SelectedInsuranceCompanyId;
             patientModel.Person =
                 SimpleMapper.Mapper.Map<PersonViewModel, MedicalExamination.BLL.PersonModel>(model.Person);
+            patientModel.Person.PassportIssuePlaceId = model.Person.SelectedPassportIssuePlaceId;
+            patientModel.Person.Id = model.PersonId;
 
             _patientService.UpdatePatient(patientModel);
 
             return RedirectToAction("Patients");
+        }
+
+        [HttpGet]
+        public ActionResult DeletePatient(int patientId)
+        {
+            try
+            {
+                var patientModel = new PatientModel {PersonId = patientId};
+
+                _patientService.DeletePatient(patientModel);
+
+                return RedirectToAction("Patients", "Patient");
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = ex.Message;
+                return RedirectToAction("Patients", "Patient");
+            }
         }
 
         [NonAction]

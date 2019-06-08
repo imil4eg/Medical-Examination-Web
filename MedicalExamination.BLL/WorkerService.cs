@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using MedicalExamination.DAL;
 using MedicalExamination.Entities;
@@ -15,10 +16,17 @@ namespace MedicalExamination.BLL
         private readonly IGenericRepository<Position> _positionRepository;
         private readonly IPositionService _positionService;
         private readonly IPositionTypeService _positionTypeService;
+        private readonly IGenericRepository<Appointment> _appointmentRepository;
+        private readonly IGenericRepository<ServiceResult> _serviceResultRepository;
+        private readonly IGenericRepository<ApplicationUser> _userRepository;
 
         public WorkerService(IGenericRepository<Worker> workerRepository, IGenericRepository<Person> personRepository,
-            IGenericRepository<ProvideService> provideServiceRepository, IGenericRepository<ServiceType> serviceRepository,
-            IGenericRepository<Position> positionRepository, IPositionService positionService, IPositionTypeService positionTypeService)
+            IGenericRepository<ProvideService> provideServiceRepository,
+            IGenericRepository<ServiceType> serviceRepository,
+            IGenericRepository<Position> positionRepository, IPositionService positionService,
+            IPositionTypeService positionTypeService, IGenericRepository<Appointment> appointmentRepository,
+            IGenericRepository<ServiceResult> serviceResultRepository,
+            IGenericRepository<ApplicationUser> userRepository)
         {
             _workerRepository = workerRepository;
             _personRepository = personRepository;
@@ -27,6 +35,9 @@ namespace MedicalExamination.BLL
             _positionRepository = positionRepository;
             _positionService = positionService;
             _positionTypeService = positionTypeService;
+            _appointmentRepository = appointmentRepository;
+            _serviceResultRepository = serviceResultRepository;
+            _userRepository = userRepository;
         }
 
         public IEnumerable<WorkerModel> GetAllWorkers()
@@ -103,8 +114,29 @@ namespace MedicalExamination.BLL
 
         public void DeleteWorker(WorkerModel workerModel)
         {
-            var worker = SimpleMapper.Mapper.Map<WorkerModel, Worker>(workerModel);
-            worker.PersonId = worker.PersonId;
+            var workerAppointments = _appointmentRepository.GetAll().Where(a => a.WorkerId == workerModel.PersonId);
+
+            if(workerAppointments.Any())
+                throw new Exception("Ошибка при удалении: Данный врач участвует в случаях диспансеризации. Удалите их или замените врача на другого, прежде чем удалять врача.");
+
+            var workerDoneServices = _serviceResultRepository.GetAll().Where(sr => sr.WorkerId == workerModel.PersonId);
+
+            if(workerDoneServices.Any())
+                throw new Exception("Ошибка при удалении: Данный врач провел услугу в рамках случая. Удалите случай или замените врача в случае, прежде чем удалять врача.");
+
+            var workerUser = _userRepository.GetAll().Where(u => u.WorkerId == workerModel.PersonId);
+
+            if(workerUser.Any())
+                throw new Exception("Ошибка при удалении: К данному врачу привязан пользователь. Удалите пользователя прежде чем удалять врача.");
+
+            var worker = _workerRepository.GetById(workerModel.PersonId);
+
+            var workerPositions = _positionRepository.GetAll().Where(p => p.WorkerId == worker.PersonId);
+
+            if (workerPositions.Any())
+            {
+                _positionRepository.Delete(workerPositions);
+            }
 
             _workerRepository.Delete(worker);
         }

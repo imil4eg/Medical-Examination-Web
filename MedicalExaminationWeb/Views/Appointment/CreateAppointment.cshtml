@@ -7,338 +7,54 @@
 <h2>Создание случая</h2>
 
 <form asp-controller="Appointment" asp-action="CreateAppointment" id="appointmentform" enctype="multipart/form-data">
+    @Html.EditorFor(m => m, "../Shared/_AppointmentPartial.cshtml")
+    @*@Html.HiddenFor(m => m.Id)
     @Html.HiddenFor(m => m.Patient.PersonId)
-<div class="row">
-    <div class="col-md-12">
-        <a class="btn btn-danger" asp-action="GetPatient" asp-controller="Patient" asp-route-patientId="">Отменить</a>
-        <input id="postappointment" onclick="post()" type="button" class="btn btn-success" value="Сохранить" />
-    </div>
-</div>
-<div class="row">
-    <h3>Случай</h3>
-    <div class="form-group">
-        <label asp-for="Workers" class="control-label col-md-2"></label>
-        <div class="col-md-10">
-            @Html.DropDownListFor(m => m.WorkerId, Model.Workers, new {@class ="form-control"})
+    <div class="row">
+        <div class="col-md-12">
+            <a class="btn btn-danger" asp-action="GetPatient" asp-controller="Patient" asp-route-patientId="">Отменить</a>
+            <input id="postappointment" onclick="post()" type="button" class="btn btn-success" value="Сохранить" />
         </div>
     </div>
-    <hr />
-    <div class="form-group">
-        <label asp-for="Outcomes" class="control-label col-md-2"></label>
-        <div class="col-md-10">
-            @Html.DropDownListFor(m => m.OutcomeId, Model.Outcomes, new {@class = "form-control"})
+    <div class="row">
+        <h3>Случай</h3>
+        <div class="form-group">
+            <label asp-for="Workers" class="control-label col-md-2"></label>
+            <div class="col-md-10">
+                @Html.DropDownListFor(m => m.WorkerId, Model.Workers, new { @class = "form-control" })
+            </div>
+        </div>
+        <hr/>
+        <br />
+        <div class="form-group">
+            <label asp-for="Outcomes" class="control-label col-md-2"></label>
+            <div class="col-md-10">
+                @Html.DropDownListFor(m => m.OutcomeId, Model.Outcomes, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="EndDate" class="control-label col-md-2"></label>
+            <div class="col-md-10">
+                <input type="date" asp-for="EndDate" class="form-control"/>
+            </div>
         </div>
     </div>
-</div>
     <div class="row">
         <h1>Анкета</h1>
-        <div class="form-group">
-            <label class="control-label col-md-12">1. Говорил ли вам врач когда-либо, что у Вас имеется</label>
-        </div>
-        <div class="form-group">
-            <label asp-for="@Model.QuestionnaireTill75.QuestionOneOne" class="control-label col-md-5"></label>
-            <div class="col-md-1">
-                <input id="firstQuestion" type="checkbox" asp-for="QuestionnaireTill75.QuestionOneOne" class="form-control" />
-            </div>
-            <div class="col-md-12"></div>
-        </div>
-        <div class="form-group">
-            <label asp-for="@Model.QuestionnaireTill75.QuestionOneOneOne" class="control-label col-md-5"></label>
-            <div class="col-md-1">
-                <input id="firstQuestionAddition" disabled="disabled" type="checkbox" asp-for="QuestionnaireTill75.QuestionOneOneOne" class="form-control" />
-            </div>
-            <div class="col-md-12"></div>
-        </div>
-        <div class="form-group">
-            <label asp-for="@Model.QuestionnaireTill75.QuestionOneTwo" class="control-label col-md-5"></label>
-            <div class="col-md-1">
-                <input type="checkbox" asp-for="QuestionnaireTill75.QuestionOneTwo" class="form-control" />
-            </div>
-            <div class="col-md-12"></div>
-        </div>
-        <div class="form-group">
-            <label asp-for="@Model.QuestionnaireTill75.QuestionOneThree" class="control-label col-md-5"></label>
-            <div class="col-md-1">
-                <input type="checkbox" asp-for="QuestionnaireTill75.QuestionOneThree" class="form-control" />
-            </div>
-            <div class="col-md-12"></div>
-        </div>
-        <div class="form-group">
-            <label asp-for="@Model.QuestionnaireTill75.QuestionOneFour" class="control-label col-md-5"></label>
-            <div class="col-md-1">
-                <input type="checkbox" asp-for="QuestionnaireTill75.QuestionOneFour" class="form-control" />
-            </div>
-            <div class="col-md-12"></div>
-        </div>
-        <div class="form-group">
-            <label asp-for="@Model.QuestionnaireTill75.QuestionOneFive" class="control-label col-md-5"></label>
-            <div class="col-md-1">
-                <input type="checkbox" asp-for="QuestionnaireTill75.QuestionOneFive" class="form-control" />
-            </div>
-            <div class="col-md-12"></div>
-        </div>
-        <div class="form-group">
-            <label asp-for="@Model.QuestionnaireTill75.QuestionOneSix" class="control-label col-md-5"></label>
-            <div class="col-md-1">
-                <input id="sixQuestion" type="checkbox" asp-for="QuestionnaireTill75.QuestionOneSix" class="form-control" />
-            </div>
-            <div class="col-md-12"></div>
-        </div>
-        <div class="form-group">
-            <label asp-for="@Model.QuestionnaireTill75.QuestionOneSixOne" class="control-label col-md-5"></label>
-            <div class="col-md-1">
-                <input id="sixQuestionAddition" disabled="disabled" type="checkbox" asp-for="QuestionnaireTill75.QuestionOneSixOne" class="form-control" />
-            </div>
-            <div class="col-md-12"></div>
-        </div>
-        <div class="form-group">
-            <label asp-for="@Model.QuestionnaireTill75.QuestionOneSeven" class="control-label col-md-5"></label>
-            <div class="col-md-1">
-                <input type="checkbox" asp-for="QuestionnaireTill75.QuestionOneSeven" class="form-control" />
-            </div>
-            <div class="col-md-12"></div>
-        </div>
-        <div class="form-group">
-            <label asp-for="@Model.QuestionnaireTill75.QuestionOneEight" class="control-label col-md-5"></label>
-            <div class="col-md-1">
-                <input type="checkbox" asp-for="QuestionnaireTill75.QuestionOneEight" class="form-control" />
-            </div>
-            <div class="col-md-12"></div>
-        </div>
-        <div class="form-group">
-            <label asp-for="@Model.QuestionnaireTill75.QuestionOneNine" class="control-label col-md-5"></label>
-            <div class="col-md-1">
-                <input id="nineQuestion" type="checkbox" asp-for="QuestionnaireTill75.QuestionOneNine" class="form-control" />
-            </div>
-            <div class="col-md-12"></div>
-        </div>
-        <div class="form-group">
-            <label asp-for="@Model.QuestionnaireTill75.QuestionOneNineOne" class="control-label col-md-5"></label>
-            <div class="col-md-5">
-                <input id="nineQuestionAddition" disabled="disabled" type="text" asp-for="QuestionnaireTill75.QuestionOneNineOne" class="form-control" />
-            </div>
-            <div class="col-md-12"></div>
-        </div>
-        <div class="form-group">
-            <label asp-for="@Model.QuestionnaireTill75.QuestionOneTen" class="control-label col-md-5"></label>
-            <div class="col-md-1">
-                <input id="tenQuestion" type="checkbox" asp-for="QuestionnaireTill75.QuestionOneTen" class="form-control" />
-            </div>
-            <div class="col-md-12"></div>
-        </div>
-        <div class="form-group">
-            <label asp-for="@Model.QuestionnaireTill75.QuestionOneTenOne" class="control-label col-md-5"></label>
-            <div class="col-md-1">
-                <input id="tenQuestionAddition" disabled="disabled" type="checkbox" asp-for="QuestionnaireTill75.QuestionOneTenOne" class="form-control" />
-            </div>
-            <div class="col-md-12"></div>
-        </div>
-        <div class="form-group">
-            <label asp-for="@Model.QuestionnaireTill75.QuestionThree" class="control-label col-md-5"></label>
-            <div class="col-md-1">
-                <input type="checkbox" asp-for="QuestionnaireTill75.QuestionThree" class="form-control" />
-            </div>
-            <div class="col-md-12"></div>
-        </div>
-        <div class="form-group">
-            <label asp-for="@Model.QuestionnaireTill75.QuestionFour" class="control-label col-md-5"></label>
-            <div class="col-md-1">
-                <input type="checkbox" asp-for="QuestionnaireTill75.QuestionFour" class="form-control" />
-            </div>
-            <div class="col-md-12"></div>
-        </div>
-        <div class="form-group">
-            <label asp-for="@Model.QuestionnaireTill75.QuestionFive" class="control-label col-md-5"></label>
-            <div class="col-md-1">
-                <input type="checkbox" asp-for="QuestionnaireTill75.QuestionFive" class="form-control" />
-            </div>
-            <div class="col-md-12"></div>
-        </div>
-        <div class="form-group">
-            <label asp-for="@Model.QuestionnaireTill75.QuestionSix" class="control-label col-md-5"></label>
-            <div class="col-md-1">
-                <input type="checkbox" asp-for="QuestionnaireTill75.QuestionSix" class="form-control" />
-            </div>
-            <div class="col-md-12"></div>
-        </div>
-        <div class="form-group">
-            <label asp-for="@Model.QuestionnaireTill75.QuestionSeven" class="control-label col-md-5"></label>
-            <div class="col-md-2">
-                @Html.DropDownListFor(m => m.QuestionnaireTill75.SelectedQuestionSevenAnswer, Model.QuestionnaireTill75.QuestionSeven, new { @class = "form-control" })
-            </div>
-            <div class="col-md-12"></div>
-        </div>
-        <div class="form-group">
-            <label asp-for="@Model.QuestionnaireTill75.QuestionEight" class="control-label col-md-5"></label>
-            <div class="col-md-1">
-                <input type="checkbox" asp-for="QuestionnaireTill75.QuestionEight" class="form-control" />
-            </div>
-            <div class="col-md-12"></div>
-        </div>
-        <div class="form-group">
-            <label asp-for="@Model.QuestionnaireTill75.QuestionNine" class="control-label col-md-5"></label>
-            <div class="col-md-1">
-                <input type="checkbox" asp-for="QuestionnaireTill75.QuestionNine" class="form-control" />
-            </div>
-            <div class="col-md-12"></div>
-        </div>
-        <div class="form-group">
-            <label asp-for="@Model.QuestionnaireTill75.QuestionTen" class="control-label col-md-5"></label>
-            <div class="col-md-1">
-                <input type="checkbox" asp-for="QuestionnaireTill75.QuestionTen" class="form-control" />
-            </div>
-            <div class="col-md-12"></div>
-        </div>
-        <div class="form-group">
-            <label asp-for="@Model.QuestionnaireTill75.QuestionEleven" class="control-label col-md-5"></label>
-            <div class="col-md-1">
-                <input type="checkbox" asp-for="QuestionnaireTill75.QuestionEleven" class="form-control" />
-            </div>
-            <div class="col-md-12"></div>
-        </div>
-        <div class="form-group">
-            <label asp-for="@Model.QuestionnaireTill75.QuestionTwelve" class="control-label col-md-5"></label>
-            <div class="col-md-1">
-                <input type="checkbox" asp-for="QuestionnaireTill75.QuestionTwelve" class="form-control" />
-            </div>
-            <div class="col-md-12"></div>
-        </div>
-        <div class="form-group">
-            <label asp-for="@Model.QuestionnaireTill75.QuestionThirteen" class="control-label col-md-5"></label>
-            <div class="col-md-1">
-                <input type="checkbox" asp-for="QuestionnaireTill75.QuestionThirteen" class="form-control" />
-            </div>
-            <div class="col-md-12"></div>
-        </div>
-        <div class="form-group">
-            <label asp-for="@Model.QuestionnaireTill75.QuestionFourteen" class="control-label col-md-5"></label>
-            <div class="col-md-1">
-                <input type="checkbox" asp-for="QuestionnaireTill75.QuestionFourteen" class="form-control" />
-            </div>
-            <div class="col-md-12"></div>
-        </div>
-        <div class="form-group">
-            <label asp-for="@Model.QuestionnaireTill75.QuestionFifteen" class="control-label col-md-5"></label>
-            <div class="col-md-1">
-                <input type="checkbox" asp-for="QuestionnaireTill75.QuestionFifteen" class="form-control" />
-            </div>
-            <div class="col-md-12"></div>
-        </div>
-        <div class="form-group">
-            <label asp-for="@Model.QuestionnaireTill75.QuestionSixteen" class="control-label col-md-5"></label>
-            <div class="col-md-1">
-                <input type="checkbox" asp-for="QuestionnaireTill75.QuestionSixteen" class="form-control" />
-            </div>
-            <div class="col-md-12"></div>
-        </div>
-        <div class="form-group">
-            <label asp-for="@Model.QuestionnaireTill75.QuestionSeventeen" class="control-label col-md-5"></label>
-            <div class="col-md-1">
-                <input type="checkbox" asp-for="QuestionnaireTill75.QuestionSeventeen" class="form-control" />
-            </div>
-            <div class="col-md-12"></div>
-        </div>
-        <div class="form-group">
-            <label asp-for="@Model.QuestionnaireTill75.QuestionEighteen" class="control-label col-md-5"></label>
-            <div class="col-md-1">
-                <input type="checkbox" asp-for="QuestionnaireTill75.QuestionEighteen" class="form-control" />
-            </div>
-            <div class="col-md-12"></div>
-        </div>
-        <div class="form-group">
-            <label asp-for="@Model.QuestionnaireTill75.QuestionNineteen" class="control-label col-md-5"></label>
-            <div class="col-md-1">
-                <input id="nineteenQuestion" type="checkbox" asp-for="QuestionnaireTill75.QuestionNineteen" class="form-control" />
-            </div>
-            <div class="col-md-12"></div>
-        </div>
-        <div class="form-group">
-            <label asp-for="@Model.QuestionnaireTill75.QuestionTwenty" class="control-label col-md-5"></label>
-            <div class="col-md-7">
-                <input id="twentyQuestionAddition" disabled="disabled" type="number" asp-for="QuestionnaireTill75.QuestionTwenty" class="form-control" />
-            </div>
-            <div class="col-md-12"></div>
-        </div>
-        <div class="form-group">
-            <label asp-for="@Model.QuestionnaireTill75.QuestionTwentyOne" class="control-label col-md-5"></label>
-            <div class="col-md-7">
-                @Html.DropDownListFor(m => m.QuestionnaireTill75.SelectedQuestionTwentyOneAnswer, Model.QuestionnaireTill75.QuestionTwentyOne, new { @class = "form-control" })
-            </div>
-            <div class="col-md-12"></div>
-        </div>
-        <div class="form-group">
-            <label asp-for="@Model.QuestionnaireTill75.QuestionTwentyTwo" class="control-label col-md-5"></label>
-            <div class="col-md-1">
-                <input type="checkbox" asp-for="QuestionnaireTill75.QuestionTwentyTwo" class="form-control" />
-            </div>
-            <div class="col-md-12"></div>
-        </div>
-        <div class="form-group">
-            <label asp-for="@Model.QuestionnaireTill75.QuestionTwentyThree" class="control-label col-md-5"></label>
-            <div class="col-md-1">
-                <input type="checkbox" asp-for="QuestionnaireTill75.QuestionTwentyThree" class="form-control" />
-            </div>
-            <div class="col-md-12"></div>
-        </div>
-        <div class="form-group">
-            <label asp-for="@Model.QuestionnaireTill75.QuestionTwentyFour" class="control-label col-md-5"></label>
-            <div class="col-md-1">
-                <input type="checkbox" asp-for="QuestionnaireTill75.QuestionTwentyFour" class="form-control" />
-            </div>
-            <div class="col-md-12"></div>
-        </div>
-        <div class="form-group">
-            <label asp-for="@Model.QuestionnaireTill75.QuestionTwentyFive" class="control-label col-md-5"></label>
-            <div class="col-md-7">
-                @Html.DropDownListFor(m => m.QuestionnaireTill75.SelectedQuestionTwentyFiveAnswer, Model.QuestionnaireTill75.QuestionTwentyFive, new { @class = "form-control" })
-            </div>
-        </div>
-        <div class="form-group">
-            <label asp-for="@Model.QuestionnaireTill75.QuestionTwentySix" class="control-label col-md-5"></label>
-            <div class="col-md-7">
-                @Html.DropDownListFor(m => m.QuestionnaireTill75.SelectedQuestionTwentySixAnswer, Model.QuestionnaireTill75.QuestionTwentySix, new { @class = "form-control" })
-            </div>
-            <div class="col-md-12"></div>
-        </div>
-        <div class="form-group">
-            <label asp-for="@Model.QuestionnaireTill75.QuestionTwentySeven" class="control-label col-md-5"></label>
-            <div class="col-md-7">
-                @Html.DropDownListFor(m => m.QuestionnaireTill75.SelectedQuestionTwentySevenAnswer, Model.QuestionnaireTill75.QuestionTwentySeven, new { @class = "form-control" })
-            </div>
-            <div class="col-md-12"></div>
-        </div>
+        @Html.EditorFor(m => m.QuestionnaireTill75, "../Shared/_QuestionnaireTill75Partial.cshtml")
     </div>
     <div class="row">
         <h1>Анализы</h1>
         @for (int i = 0; i < Model.ServicesResults.Count; i++)
         {
             <hr />
-            <div class="form-group">
-                @Html.HiddenFor(m => m.ServicesResults[i].ServiceTypeId)
-                <label class="control-label col-md-12">@Model.ServicesResults[i].Service.Name</label>
-                <div class="form-group">
-                    <label asp-for="@Model.ServicesResults[i].Result" class="control-label col-md-2"></label>
-                    <div class="col-md-10">
-                        <input type="text" asp-for="@Model.ServicesResults[i].Result" class="form-control" />
-                        @Html.ValidationMessageFor(m => Model.ServicesResults[i].Result, "", new { @class = "text-danger" })
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label asp-for="@Model.ServicesResults[i].TubeNumber" class="control-label col-md-2"></label>
-                    <div class="col-md-10">
-                        <input type="text" asp-for="@Model.ServicesResults[i].TubeNumber" class="form-control" />
-                        @Html.ValidationMessageFor(m => Model.ServicesResults[i].Result, "", new { @class = "text-danger" })
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label asp-for="@Model.ServicesResults[i].Workers" class="control-label col-md-2"></label>
-                    <div class="col-md-10">
-                        @Html.DropDownListFor(m => m.ServicesResults[i].WorkerId, Model.ServicesResults[i].Workers, new { @class = "form-control" })
-                    </div>
-                </div>
-            </div>
+            @Html.HiddenFor(m => m.ServicesResults[i].Id)
+            @Html.HiddenFor(m => m.ServicesResults[i].AppointmentId)
+            @Html.HiddenFor(m => m.ServicesResults[i].ServiceTypeId)
+            <p></p>
+            @Html.EditorFor(m => m.ServicesResults[i], "../Shared/_ServiceResultPartial.cshtml")
         }
-    </div>
+    </div>*@
 </form>
 
 @section Scripts{
@@ -353,8 +69,8 @@
                     url: url,
                     data: $('#appointmentform').serialize(), //your form name.it takes all the values of model
                     dataType: 'json',
-                    success: function(result) {
-                        console.log(result);
+                    success: function(data) {
+                        window.location.href = data;
                     }
                 });
             };

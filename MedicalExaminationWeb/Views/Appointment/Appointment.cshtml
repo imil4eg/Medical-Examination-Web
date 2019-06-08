@@ -7,7 +7,8 @@
 <h2>Случай</h2>
 
 <form asp-controller="Appointment" asp-action="UpdateAppointment" id="updateappointmentform" enctype="multipart/form-data">
-    @Html.HiddenFor(m => m.Id)
+    @Html.EditorFor(m => m, "../Shared/_AppointmentPartial.cshtml")
+    @*@Html.HiddenFor(m => m.Id)
     @Html.HiddenFor(m => m.Patient.PersonId)
     <div class="row">
         <div class="col-md-12">
@@ -23,15 +24,23 @@
                 @Html.DropDownListFor(m => m.WorkerId, Model.Workers, new { @class = "form-control" })
             </div>
         </div>
-        <hr />
+        <hr/>
+        <br />
         <div class="form-group">
             <label asp-for="Outcomes" class="control-label col-md-2"></label>
             <div class="col-md-10">
                 @Html.DropDownListFor(m => m.OutcomeId, Model.Outcomes, new { @class = "form-control" })
             </div>
         </div>
+        <div class="form-group">
+            <label asp-for="EndDate" class="control-label col-md-2"></label>
+            <div class="col-md-10">
+                <input type="date" asp-for="EndDate" class="form-control"/>
+            </div>
+        </div>
     </div>
     <div class="row">
+        <h1>Анкета</h1>
         @Html.EditorFor(m => m.QuestionnaireTill75, "../Shared/_QuestionnaireTill75Partial.cshtml")
     </div>
     <div class="row">
@@ -42,33 +51,10 @@
             @Html.HiddenFor(m => m.ServicesResults[i].Id)
             @Html.HiddenFor(m => m.ServicesResults[i].AppointmentId)
             @Html.HiddenFor(m => m.ServicesResults[i].ServiceTypeId)
+            <p></p>
             @Html.EditorFor(m => m.ServicesResults[i], "../Shared/_ServiceResultPartial.cshtml")
-            @*<div class="form-group">
-                @Html.HiddenFor(m => m.ServicesResults[i].ServiceTypeId)
-                <label class="control-label col-md-12">@Model.ServicesResults[i].Service.Name</label>
-                <div class="form-group">
-                    <label asp-for="@Model.ServicesResults[i].Result" class="control-label col-md-2"></label>
-                    <div class="col-md-10">
-                        <input type="text" asp-for="@Model.ServicesResults[i].Result" class="form-control" />
-                        @Html.ValidationMessageFor(m => Model.ServicesResults[i].Result, "", new { @class = "text-danger" })
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label asp-for="@Model.ServicesResults[i].TubeNumber" class="control-label col-md-2"></label>
-                    <div class="col-md-10">
-                        <input type="text" asp-for="@Model.ServicesResults[i].TubeNumber" class="form-control" />
-                        @Html.ValidationMessageFor(m => Model.ServicesResults[i].Result, "", new { @class = "text-danger" })
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label asp-for="@Model.ServicesResults[i].Workers" class="control-label col-md-2"></label>
-                    <div class="col-md-10">
-                        @Html.DropDownListFor(m => m.ServicesResults[i].WorkerId, Model.ServicesResults[i].Workers, new { @class = "form-control" })
-                    </div>
-                </div>
-            </div>*@
         }
-    </div>
+    </div>*@
 </form>
 
 @section Scripts{

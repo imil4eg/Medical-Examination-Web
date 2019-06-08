@@ -27,9 +27,11 @@ namespace MedicalExamination.BLL
             _questionnaireRepository.Update(updateQuestionnaire);
         }
 
-        public void DeleteQuestionnaire(QuestionnaireTill75 questionnaire)
+        public void DeleteQuestionnaire(Guid questionnaireId)
         {
-            throw new NotImplementedException();
+            var questionnaire = _questionnaireRepository.GetById(questionnaireId);
+
+            _questionnaireRepository.Delete(questionnaire);
         }
 
         public void CreateQuestionnaire(QuestionnaireTill75 questionnaire)

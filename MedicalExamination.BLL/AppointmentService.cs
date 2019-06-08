@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using MedicalExamination.DAL;
 using MedicalExamination.Entities;
+using SimpleMapper;
 
 namespace MedicalExamination.BLL
 {
@@ -54,6 +55,12 @@ namespace MedicalExamination.BLL
         public IEnumerable<Appointment> GetAllAppointments()
         {
             return _appointmentRepository.GetAll();
+        }
+
+        public IEnumerable<AppointmentModel> GetAllAppointmentOfPatient(int patientId)
+        {
+            return _appointmentRepository.GetAll().AsEnumerable().Where(a => a.PatientId == patientId)
+                .Map<Appointment, AppointmentModel>();
         }
 
         public AppointmentModel GetAppointment(Guid id)
@@ -144,15 +151,18 @@ namespace MedicalExamination.BLL
             appointmentModel.QuestionnaireTill75.AppointmentId = appointment.Id;
 
             _questionnaireTill75Service.UpdateQuestionnaire(appointmentModel.QuestionnaireTill75);
-
-            //_questionnaireTill75Repository.Update(appointmentModel.QuestionnaireTill75);
-
-            //_appointmentRepository.Update(appointment);
         }
 
         public void DeleteAppointment(AppointmentModel appointmentModel)
         {
-            //_appointmentRepository.Delete(appointment);
+            var serviceResults = _serviceResultService.GetServiceResultsOfAppointment(appointmentModel.Id);
+            _serviceResultService.DeleteServiceResultsOfAppointment(appointmentModel.Id);
+
+            _questionnaireTill75Service.DeleteQuestionnaire(appointmentModel.Id);
+
+            var appointment = _appointmentRepository.GetById(appointmentModel.Id);
+
+            _appointmentRepository.Delete(appointment);
         }
     }
 }

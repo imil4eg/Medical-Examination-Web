@@ -8,6 +8,7 @@
 
 
 <form asp-controller="Patient" asp-action="UpdatePatient" method="post">
+    @Html.HiddenFor(m => m.PersonId)
     @Html.AntiForgeryToken()
     <div class="form-horizontal">
         @Html.EditorFor(m => m, "../Shared/_PatientPartial.cshtml")
@@ -29,9 +30,10 @@
                     <td>@appointment.Worker.Person.LastName</td>
                     <td>@appointment.EndDate</td>
                     <td><a asp-controller="Appointment" asp-action="GetAppointment" asp-route-appointmentId="@appointment.Id" class="btn btn-primary">Открыть</a></td>
+                    <td><a asp-controller="Appointment" asp-action="DeleteAppointment" asp-route-appointmentId="@appointment.Id" class="btn btn-danger">Удалить</a></td>
                 </tr>
 
-                i++;
+                i+= 1;
             }
         </table>
         <div class="col-md-12">

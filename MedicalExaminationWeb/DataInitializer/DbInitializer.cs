@@ -173,7 +173,7 @@ namespace MedicalExaminationWeb
 
             var person = new Person
             {
-                BirthDate = DateTime.Now,
+                BirthDate = DateTime.Now.AddYears(-30),
                 FirstName = "Test",
                 LastName = "Test",
                 Gender = MedicalExamination.Entities.Gender.Female,
@@ -240,7 +240,7 @@ namespace MedicalExaminationWeb
             {
                 FirstName = "TestPerson1",
                 LastName = "TestPerson1",
-                BirthDate = DateTime.Now.AddYears(-18),
+                BirthDate = DateTime.Now.AddYears(-48),
                 Gender = MedicalExamination.Entities.Gender.Male,
                 SNILS = "684586485648",
                 MiddleName = "test",
@@ -267,7 +267,7 @@ namespace MedicalExaminationWeb
             {
                 FirstName = "TestPerson2",
                 LastName = "TestPerson2",
-                BirthDate = DateTime.Now.AddYears(-19),
+                BirthDate = DateTime.Now.AddYears(-25),
                 Gender = MedicalExamination.Entities.Gender.Female,
                 SNILS = "228",
                 MiddleName = "test2",

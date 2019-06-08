@@ -7,8 +7,9 @@
 <h2>Пациенты</h2>
 
 <div class="container">
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
     <div class="row">
-        <hr />
+        <hr/>
         <a asp-controller="Patient" asp-action="CreatePatient" class="btn btn-success">Создать пациента</a>
         <table class="table">
             <tr>
@@ -27,6 +28,7 @@
                     <td>@patient.Person.Gender</td>
                     <td>@patient.Person.BirthDate.Date.ToString("dd MMMM yyyy")</td>
                     <td><a asp-controller="Patient" asp-action="GetPatient" asp-route-patientId="@patient.PersonId" class="btn btn-primary">Показать</a></td>
+                    <td><a asp-controller="Patient" asp-action="DeletePatient" asp-route-patientId="@patient.PersonId" class="btn btn-danger">Удалить</a></td>
                 </tr>
             }
         </table>

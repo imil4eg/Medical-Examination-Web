@@ -34,6 +34,11 @@ namespace MedicalExaminationWeb.Controllers
                 models[i].PositionTypes = workers[i].PositionTypes.Map<PositionTypeModel, PositionTypeViewModel>();
             }
 
+            if (TempData.ContainsKey("ErrorMessage"))
+            {
+                ModelState.AddModelError("", TempData["ErrorMessage"] as string);
+            }
+
             return View(models);
         }
 
@@ -132,22 +137,21 @@ namespace MedicalExaminationWeb.Controllers
             return RedirectToAction("Workers");
         }
 
-        [HttpDelete]
-        [Route("delete")]
-        public ActionResult DeleteWorker([FromBody] WorkerViewModel model)
+        [HttpGet]
+        public ActionResult DeleteWorker(int workerId)
         {
             try
             {
-                var worker = SimpleMapper.Mapper.Map<WorkerViewModel, MedicalExamination.BLL.WorkerModel>(model);
-                worker.Person = SimpleMapper.Mapper.Map<PersonViewModel, MedicalExamination.BLL.PersonModel>(model.Person);
+                var worker = new WorkerModel {PersonId = workerId};
 
                 _workerService.DeleteWorker(worker);
 
-                return Ok();
+                return RedirectToAction("Workers");
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.InnerException.Message);
+                TempData["ErrorMessage"] = ex.Message;
+                return RedirectToAction("Workers");
             }
         }
     }

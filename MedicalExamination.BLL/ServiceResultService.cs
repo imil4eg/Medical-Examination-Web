@@ -57,5 +57,12 @@ namespace MedicalExamination.BLL
 
             _serviceResultRepository.Delete(serviceResult);
         }
+
+        public void DeleteServiceResultsOfAppointment(Guid appointmentId)
+        {
+            var serviceResults = _serviceResultRepository.GetAll().Where(sr => sr.AppointmentId == appointmentId);
+
+            _serviceResultRepository.Delete(serviceResults);
+        }
     }
 }

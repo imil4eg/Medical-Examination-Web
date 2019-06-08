@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using MedicalExamination.DAL;
 using MedicalExamination.Entities;
@@ -80,27 +81,31 @@ namespace MedicalExamination.BLL
 
         public void UpdatePatient(PatientModel patientModel)
         {
-            var person = SimpleMapper.Mapper.Map<PersonModel, Person>(patientModel.Person);
+            var person = _personRepository.GetById(patientModel.PersonId);
+
+            person = SimpleMapper.Mapper.Map(patientModel.Person, person);
+
             _personRepository.Update(person);
 
-            _personRepository.SaveChanges();
+            var patient = _patientRepository.GetById(patientModel.PersonId);
+            patient = SimpleMapper.Mapper.Map(patientModel, patient);
 
-            var patient = SimpleMapper.Mapper.Map<PatientModel, Patient>(patientModel);
             patient.Person = person;
             _patientRepository.Update(patient);
-            _patientRepository.SaveChanges();
         }
 
         public void DeletePatient(PatientModel patientModel)
         {
-            var patient = new Patient
+            var appointments = _appointmentRepository.GetAll().Where(a => a.PatientId == patientModel.PersonId);
+
+            if (appointments.Any())
             {
-                PersonId = patientModel.PersonId
-            };
+                throw new Exception("При удалении произошла ошибка: У пациента есть случаи диспансеризации. Удалите их и потом попробоуйте снова.");
+            }
+
+            var patient = _patientRepository.GetById(patientModel.PersonId);
 
             _patientRepository.Delete(patient);
-
-            _patientRepository.SaveChanges();
         }
     }
 }

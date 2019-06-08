@@ -29,6 +29,7 @@ namespace MedicalExaminationWeb
         
         public ExaminationResultModel ExaminationResult { get; set; }
 
+        [DisplayName("Дата окончания")]
         public DateTime EndDate { get; set; }
 
         public IList<ServiceResultViewModel> ServicesResults { get; set; }

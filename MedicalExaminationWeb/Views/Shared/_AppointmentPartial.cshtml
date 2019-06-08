@@ -1,0 +1,50 @@
+﻿@model AppointmentViewModel
+
+@Html.HiddenFor(m => m.Id)
+@Html.HiddenFor(m => m.Patient.PersonId)
+<div class="row">
+    <div class="col-md-12">
+        <a class="btn btn-danger" asp-action="GetPatient" asp-controller="Patient" asp-route-patientId="">Отменить</a>
+        <input id="postappointment" onclick="post()" type="button" class="btn btn-success" value="Сохранить" />
+    </div>
+</div>
+<div class="row">
+    <h3>Случай</h3>
+    <div class="form-group">
+        <label asp-for="Workers" class="control-label col-md-2"></label>
+        <div class="col-md-10">
+            @Html.DropDownListFor(m => m.WorkerId, Model.Workers, new { @class = "form-control" })
+        </div>
+    </div>
+    <hr/>
+    <br />
+    <div class="form-group">
+        <label asp-for="Outcomes" class="control-label col-md-2"></label>
+        <div class="col-md-10">
+            @Html.DropDownListFor(m => m.OutcomeId, Model.Outcomes, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group">
+        <label asp-for="EndDate" class="control-label col-md-2"></label>
+        <div class="col-md-10">
+            <input type="date" asp-for="EndDate" class="form-control"/>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <h1>Анкета</h1>
+    @Html.EditorFor(m => m.QuestionnaireTill75, "../Shared/_QuestionnaireTill75Partial.cshtml")
+</div>
+<div class="row">
+    <h1>Анализы</h1>
+    @for (int i = 0; i < Model.ServicesResults.Count; i++)
+    {
+        <hr />
+        @Html.HiddenFor(m => m.ServicesResults[i].Id)
+        @Html.HiddenFor(m => m.ServicesResults[i].AppointmentId)
+        @Html.HiddenFor(m => m.ServicesResults[i].ServiceTypeId)
+        <p></p>
+        @Html.EditorFor(m => m.ServicesResults[i], "../Shared/_ServiceResultPartial.cshtml")
+    }
+</div>
+

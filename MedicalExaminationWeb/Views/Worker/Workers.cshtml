@@ -7,8 +7,9 @@
 <h2>Работники</h2>
 
 <div class="container">
+    @Html.ValidationSummary(true, "", new {@class = "text-danger"})
     <div class="row">
-        <hr />
+        <hr/>
         <a asp-controller="Worker" asp-action="CreateWorker" class="btn btn-success">Создать работника</a>
         <table class="table">
             <tr>
@@ -17,16 +18,17 @@
                 <th>Отчество</th>
                 <th>Должность</th>
             </tr>
-                @foreach (var worker in @Model)
-                {
-                    <tr>
-                        <td>@worker.Person.LastName</td>
-                        <td>@worker.Person.FirstName</td>
-                        <td>@worker.Person.MiddleName</td>
-                        <td>@worker.PositionTypes.First().Name</td>
-                        <td><a asp-controller="Worker" asp-action="GetWorker" asp-route-workerId="@worker.Person.Id" class="btn btn-primary">Открыть</a></td>
-                    </tr>
-                }
+            @foreach (var worker in @Model)
+            {
+                <tr>
+                    <td>@worker.Person.LastName</td>
+                    <td>@worker.Person.FirstName</td>
+                    <td>@worker.Person.MiddleName</td>
+                    <td>@worker.PositionTypes.First().Name</td>
+                    <td><a asp-controller="Worker" asp-action="GetWorker" asp-route-workerId="@worker.Person.Id" class="btn btn-primary">Открыть</a></td>
+                    <td><a asp-controller="Worker" asp-action="DeleteWorker" asp-route-workerId="@worker.Person.Id" class="btn btn-danger">Удалить</a></td>
+                </tr>
+            }
         </table>
     </div>
 </div>

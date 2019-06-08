@@ -77,11 +77,16 @@ namespace MedicalExaminationWeb.Controllers
             appointmentViewModel.Workers = new SelectList(workerModels, "PersonId", "FullName");
             appointmentViewModel.WorkerId = appointment.Worker.PersonId;
 
+            var serviceTypes =
+                _serviceTypeService
+                    .GetAllAServiceTypes()
+                    .Map<ServiceTypeModel, ServiceViewModel>();
+
             appointmentViewModel.ServicesResults = appointment.ServicesResults.Select(serviceType => new ServiceResultViewModel
             {
                 Id = serviceType.Id,
-                Service = SimpleMapper.Mapper.Map<ServiceResultModel, ServiceViewModel>(serviceType),
-                ServiceTypeId = serviceType.Id,
+                Service = serviceTypes.FirstOrDefault(st => st.Id == serviceType.ServiceTypeId),
+                ServiceTypeId = serviceType.ServiceTypeId,
                 Result = serviceType.Result,
                 TubeNumber = serviceType.TubeNumber,
                 AppointmentId = appointmentId,
@@ -252,37 +257,14 @@ namespace MedicalExaminationWeb.Controllers
             return Json(Url.Action("GetPatient","Patient", new { patientId = appointment.Patient.PersonId}));
         }
 
-        [HttpDelete]
-        public ActionResult DeleteAppointment(AppointmentViewModel model)
+        [HttpGet]
+        public ActionResult DeleteAppointment(Guid appointmentId)
         {
-            try
-            {
-                var appointment =
-                    SimpleMapper.Mapper.Map<AppointmentViewModel, MedicalExamination.BLL.AppointmentModel>(model);
-                appointment.Patient =
-                    SimpleMapper.Mapper.Map<PatientViewModel, MedicalExamination.BLL.PatientModel>(model.Patient);
-                appointment.Worker =
-                    SimpleMapper.Mapper.Map<WorkerViewModel, MedicalExamination.BLL.WorkerModel>(model.Worker);
-                appointment.ServicesResults = model.ServicesResults.Select(sr =>
-                    SimpleMapper.Mapper.Map<ServiceResultViewModel, MedicalExamination.BLL.ServiceResultModel>(sr));
+            var appointmentModel = new AppointmentModel() {Id = appointmentId};
 
-                if (model.QuestionnaireAfter75 != null)
-                {
-                    appointment.QuestionnaireAfter75 = model.QuestionnaireAfter75;
-                }
-                else
-                {
-                    //appointment.QuestionnaireTill75 = model.QuestionnaireTill75;
-                }
+            this._appointmentService.DeleteAppointment(appointmentModel);
 
-                this._appointmentService.DeleteAppointment(appointment);
-
-                return Ok();
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            return RedirectToAction("Patients", "Patient");
         }
 
         [NonAction]

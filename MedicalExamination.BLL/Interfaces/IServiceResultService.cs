@@ -15,5 +15,6 @@ namespace MedicalExamination.BLL
         void CreateServiceResult(ServiceResultModel serviceResult);
         void UpdateServiceResult(ServiceResultModel serviceResult);
         void DeleteServiceResult(ServiceResultModel serviceResult);
+        void DeleteServiceResultsOfAppointment(Guid appointmentId);
     }
 }
