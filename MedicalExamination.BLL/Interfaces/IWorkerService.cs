@@ -10,7 +10,7 @@ namespace MedicalExamination.BLL
     {
         IEnumerable<WorkerModel> GetAllWorkers();
         WorkerModel GetWorker(int id);
-        void CreateWorker(WorkerModel workerModel);
+        int CreateWorker(WorkerModel workerModel);
         void UpdateWorker(WorkerModel workerModel);
         void DeleteWorker(WorkerModel workerModel);
         void RelateUserToWorker(WorkerModel workerModel);

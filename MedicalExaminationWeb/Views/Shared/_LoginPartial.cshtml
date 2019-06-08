@@ -1,10 +1,11 @@
 ﻿@if (User.Identity.IsAuthenticated)
 {
     <ul class="nav navbar-nav navbar-right">
-        <li><a>@User.Identity.Name</a></li>
-        @if (User.IsInRole("admin"))
+        <li><a>Здравствуйте! @User.Identity.Name</a></li>
+        @if (User.IsInRole("Admin"))
         {
-
+            <li><a asp-controller="User" asp-action="GetAllUsers">Пользователи</a></li>
         }
+        <li><a asp-controller="Authorization" asp-action="LogOff">Выйти</a></li>
     </ul>
 }

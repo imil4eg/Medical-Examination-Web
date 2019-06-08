@@ -1,30 +1,63 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using MedicalExamination.BLL;
 using MedicalExamination.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using SimpleMapper;
 
 namespace MedicalExaminationWeb.Controllers
 {
-    [Route("api/[controller]")]
-    public sealed class UserController : ControllerBase
+    public sealed class UserController : Controller
     {
         private readonly IUserService _userService;
+        private readonly IWorkerService _workerService;
+        private readonly IPositionTypeService _positionTypeService;
+        private readonly IPassportIssuePlaceTypeService _passportIssuePlaceTypeService;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly RoleManager<ApplicationRole> _roleManager;
 
-        public UserController(UserManager<ApplicationUser> userManager)
+        public UserController(UserManager<ApplicationUser> userManager, RoleManager<ApplicationRole> roleManager,
+            IWorkerService workerService,
+            IPositionTypeService positionTypeService, IPassportIssuePlaceTypeService passportIssuePlaceTypeService)
         {
-            
             _userManager = userManager;
+            _workerService = workerService;
+            _positionTypeService = positionTypeService;
+            _passportIssuePlaceTypeService = passportIssuePlaceTypeService;
+            _roleManager = roleManager;
         }
 
         [HttpGet]
-        public ActionResult GetAllUsers()
+        public async Task<ActionResult> GetAllUsers()
         {
-            return Ok(_userService.GetAllUsers());
+            var users = _userManager.Users.AsEnumerable();
+
+            var userModels = new List<UserViewModel>();
+
+            foreach (var user in users)
+            {
+                var worker = _workerService.GetWorker(user.WorkerId);
+                var userViewModel = new UserViewModel
+                {
+                    User = new UserModel {Id = user.Id, UserName = user.UserName},
+                    Worker = SimpleMapper.Mapper.Map<WorkerModel, WorkerViewModel>(worker)
+                };
+
+                userViewModel.Worker.Person = SimpleMapper.Mapper.Map<PersonModel, PersonViewModel>(worker.Person);
+
+                var roles = await _userManager.GetRolesAsync(user);
+
+                userViewModel.CurrentUserRole = new RoleViewModel {Name = roles.First()};
+
+                userModels.Add(userViewModel);
+            }
+
+            return View("Users", userModels);
         }
 
         [HttpGet]
@@ -34,103 +67,150 @@ namespace MedicalExaminationWeb.Controllers
             return Ok(_userService.GetUserById(id));
         }
 
+        [HttpGet]
+        public ActionResult CreateUser()
+        {
+            var model = new UserViewModel
+            {
+                Worker = new WorkerViewModel
+                {
+                    Person = new PersonViewModel()
+                }
+            };
+
+            this.FullFillArrays(model);
+            
+            return View("CreateUser", model);
+        }
+
         [HttpPost]
-        [Route("create")]
-        public async Task<ActionResult> CreateUser([FromBody] UserModel model)
+        public async Task<ActionResult> CreateUser(UserViewModel model)
         {
-            try
+            if (!ModelState.IsValid)
             {
-                var user = SimpleMapper.Mapper.Map<UserModel, ApplicationUser>(model);
-                var worker = new Worker
-                {
-                    PersonId = model.Worker.Person.Id
-                };
-                user.Worker = worker;
-                var result = await _userManager.CreateAsync(user, user.Password);
+                this.FullFillArrays(model);
 
-                if (result.Succeeded)
-                {
-                    return Ok();
-                }
-
-                throw new Exception(this.GetIdentityErrorsDescription(result.Errors));
+                return View(model);
             }
-            catch (Exception ex)
+
+            var hasNumber = new Regex(@"[0-9]+");
+            var hasUpperChar = new Regex(@"[A-Z]+");
+            var hasLowerChar = new Regex(@"[a-z]+");
+            var hasSymbols = new Regex(@"[!@#$%^&*()_+=\[{\]};:<>|./?,-]");
+
+            if (!hasNumber.IsMatch(model.User.Password) ||
+                !hasUpperChar.IsMatch(model.User.Password) ||
+                !hasLowerChar.IsMatch(model.User.Password) ||
+                !hasSymbols.IsMatch(model.User.Password))
             {
-                return BadRequest(ex.Message);
+                ModelState.AddModelError("", "Пароль должен содержать: " +
+                                             "Хотя бы одну букву малого регистра;\n" +
+                                             "Хотя бы одну букву большого регистра;\n" +
+                                             "Хотя бы одну цифру;\n" +
+                                             "Хотя бы один спец. символ;");
+
+                this.FullFillArrays(model);
+
+                return View("CreateUser", model);
             }
+
+            var worker = SimpleMapper.Mapper.Map<WorkerViewModel, MedicalExamination.BLL.WorkerModel>(model.Worker);
+            worker.Person =
+                SimpleMapper.Mapper.Map<PersonViewModel, MedicalExamination.BLL.PersonModel>(model.Worker.Person);
+            worker.Position = model.Worker.SelectedPosition;
+            worker.Person.PassportIssuePlaceId = model.Worker.Person.SelectedPassportIssuePlaceId;
+
+            worker.PersonId = _workerService.CreateWorker(worker);
+
+            var user = new ApplicationUser
+            {
+                UserName = model.User.UserName,
+                WorkerId = worker.PersonId,
+                Password = model.User.Password
+            };
+
+            var result = await _userManager.CreateAsync(user, user.Password);
+
+            var role = await _roleManager.FindByIdAsync(model.SelectedRoleId.ToString());
+            await _userManager.AddToRoleAsync(user, role.Name);
+
+            return RedirectToAction("GetAllUsers", "User");
         }
 
-        [HttpPut]
-        [Route("update")]
-        public async Task<ActionResult> UpdateUser([FromBody] UserModel model)
+        [HttpGet]
+        public async Task<ActionResult> UpdateUser(Guid userId)
         {
-            try
+            var user = await _userManager.FindByIdAsync(userId.ToString());
+
+            var userModel = new UserViewModel
             {
-                var user = await _userManager.FindByNameAsync(model.UserName);
-
-                if (user == null)
+                User = new UserModel
                 {
-                    return BadRequest("User doesn't exist");
+                    Id = userId,
+                    UserName = user.UserName
                 }
+            };
 
-                if (!string.IsNullOrEmpty(model.OldPassword))
-                {
-                    var passwordResult = await _userManager.ChangePasswordAsync(user, model.OldPassword, model.Password);
+            var userRoles = await _userManager.GetRolesAsync(user);
 
-                    if (!passwordResult.Succeeded)
-                    {
-                        throw new Exception(this.GetIdentityErrorsDescription(passwordResult.Errors));
-                    }
-                }
-                //user.SecurityStamp = Guid.NewGuid().ToString();
-                user.Password = model.Password;
+            var roles = _roleManager.Roles.AsEnumerable();
+            userModel.Roles = new SelectList(roles, "Id", "Name");
+            userModel.SelectedRoleId = roles.FirstOrDefault(r => r.Name.Equals(userRoles.First())).Id;
 
-                var result = await _userManager.UpdateAsync(user);
+            userModel.CurrentUserRole = new RoleViewModel {Id = userModel.SelectedRoleId};
 
-                if (result.Succeeded)
-                {
-                    return Ok();
-                }
-
-                throw new Exception(this.GetIdentityErrorsDescription(result.Errors));
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            return View("UserProfile", userModel);
         }
 
-        [HttpDelete]
-        [Route("delete")]
-        public async Task<ActionResult> DeleteUser([FromBody] UserModel model)
+        [HttpPost]
+        public async Task<ActionResult> UpdateUser(UserViewModel model)
         {
-            try
-            {
-                var user = await _userManager.FindByNameAsync(model.UserName);
+            if (model.CurrentUserRole.Id == model.SelectedRoleId)
+                return RedirectToAction("GetAllUsers");
 
-                if (user == null)
-                    return BadRequest("User doesn't exist");
+            var roles = _roleManager.Roles.AsEnumerable();
 
-                var result = await _userManager.DeleteAsync(user);
+            var newRole = roles.FirstOrDefault(r => r.Id == model.SelectedRoleId);
+            var oldRole = roles.FirstOrDefault(r => r.Id == model.CurrentUserRole.Id);
 
-                if (result.Succeeded)
-                {
-                    return Ok();
-                }
+            var user = await _userManager.FindByIdAsync(model.User.Id.ToString());
 
-                throw new Exception(this.GetIdentityErrorsDescription(result.Errors));
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            await _userManager.RemoveFromRoleAsync(user, oldRole.Name);
+            await _userManager.AddToRoleAsync(user, newRole.Name);
+
+            return RedirectToAction("GetAllUsers");
+        }
+
+        [HttpGet]
+        public async Task<ActionResult> DeleteUser(Guid userId)
+        {
+            var user = await _userManager.FindByIdAsync(userId.ToString());
+
+            await _userManager.DeleteAsync(user);
+
+            return RedirectToAction("GetAllUsers");
         }
 
         [NonAction]
         public string GetIdentityErrorsDescription(IEnumerable<IdentityError> errors)
         {
             return string.Join(", ", errors.Select(e => e.Description));
+        }
+
+        [NonAction]
+        private void FullFillArrays(UserViewModel model)
+        {
+            var positions = _positionTypeService.GetAllPositionTypes();
+            model.Worker.PositionsList = new SelectList(positions, "Id", "Name");
+            model.Worker.SelectedPosition = positions.First().Id;
+
+            var passportIssuePlaces = _passportIssuePlaceTypeService.GetAllPassportIssuePlaces();
+            model.Worker.Person.PassportIssuePlaces = new SelectList(passportIssuePlaces, "Id", "Name");
+            model.Worker.Person.SelectedPassportIssuePlaceId = passportIssuePlaces.First().Id;
+
+            var roles = _roleManager.Roles.AsEnumerable();
+            model.Roles = new SelectList(roles, "Id", "Name");
+            model.SelectedRoleId = roles.First().Id;
         }
     }
 }

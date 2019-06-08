@@ -1,24 +1,18 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Runtime.Serialization;
 
 namespace MedicalExaminationWeb
 {
-    [DataContract]
     public sealed class UserModel
     {
         [DataMember(Name = "id")]
         public Guid Id { get; set; }
 
-        [DataMember(Name = "username")]
+        [DisplayName("Имя пользователя")]
         public string UserName { get; set; }
 
-        [DataMember(Name = "password")]
+        [DisplayName("Пароль")]
         public string Password { get; set; }
-
-        [DataMember(Name = "old_password")]
-        public string OldPassword { get; set; }
-
-        [DataMember(Name = "worker")]
-        public WorkerViewModel Worker { get; set; }
     }
 }

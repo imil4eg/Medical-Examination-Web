@@ -1,0 +1,34 @@
+﻿@model IEnumerable<UserViewModel>
+
+@{
+    ViewData["Title"] = "Users";
+}
+
+<h2>Пользователи</h2>
+
+<div class="container">
+    <div class="row">
+        <hr/>
+        <a asp-controller="User" asp-action="CreateUser" class="btn btn-success">Создать пользователя</a>
+        <table class="table">
+            <tr>
+                <th>Имя пользователя</th>
+                <th>Фамилия</th>
+                <th>Имя</th>
+                <th>Роль</th>
+            </tr>
+            @foreach (var user in Model)
+            {
+                <tr>
+                    <td>@user.User.UserName</td>
+                    <td>@user.Worker.Person.LastName</td>
+                    <td>@user.Worker.Person.FirstName</td>
+                    <td>@user.CurrentUserRole.Name</td>
+                    <td><a asp-controller="User" asp-action="UpdateUser" asp-route-userId="@user.User.Id" class="btn btn-primary">Изменить</a></td>
+                    <td><a asp-controller="User" asp-action="DeleteUser" asp-route-userId="@user.User.Id" class="btn btn-danger">Удалить</a></td>
+                </tr>
+            }
+        </table>
+    </div>
+</div>
+

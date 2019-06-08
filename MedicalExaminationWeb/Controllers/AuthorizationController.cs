@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using MedicalExamination.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -53,6 +54,13 @@ namespace MedicalExaminationWeb.Controllers
 
             ModelState.AddModelError("", "Неверный логин или пароль.");
             return View(model);
+        }
+
+        [HttpGet]
+        public async Task<ActionResult> LogOff()
+        {
+            await _signInManager.SignOutAsync();
+            return RedirectToAction("Login");
         }
     }
 }

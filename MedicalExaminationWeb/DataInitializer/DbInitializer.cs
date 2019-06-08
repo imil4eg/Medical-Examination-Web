@@ -299,14 +299,24 @@ namespace MedicalExaminationWeb
                 return;
             }
 
-            var testRole = new ApplicationRole
+            var userRole = new ApplicationRole
             {
-                Name = "Test",
-                NormalizedName = "TEST",
+                Name = "User",
+                NormalizedName = "USER"
             };
 
-            var createTestRole =  await _roleManager.CreateAsync(testRole);
+            await _roleManager.CreateAsync(userRole);
 
+            _context.SaveChanges();
+
+            var testRole = new ApplicationRole
+            {
+                Name = "Admin",
+                NormalizedName = "ADMIN",
+            };
+            
+            var createTestRole =  await _roleManager.CreateAsync(testRole);
+            
             _context.SaveChanges();
         }
 

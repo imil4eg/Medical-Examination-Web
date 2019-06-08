@@ -75,7 +75,7 @@ namespace MedicalExamination.BLL
             return model;
         }
 
-        public void CreateWorker(WorkerModel workerModel)
+        public int CreateWorker(WorkerModel workerModel)
         {
             var person = SimpleMapper.Mapper.Map<PersonModel, Person>(workerModel.Person);
              person =  _personRepository.Insert(person);
@@ -84,11 +84,13 @@ namespace MedicalExamination.BLL
             worker.Person = person;
             worker.PersonId = person.Id;
 
-            _workerRepository.Insert(worker);
+            var createdWorker = _workerRepository.Insert(worker);
 
             var position = new PositionModel {PositionId = workerModel.Position, WorkerId = person.Id};
 
             _positionService.CreatePosition(position);
+
+            return createdWorker.PersonId;
         }
 
         public void UpdateWorker(WorkerModel workerModel)

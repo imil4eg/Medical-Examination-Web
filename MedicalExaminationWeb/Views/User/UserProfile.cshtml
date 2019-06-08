@@ -1,0 +1,22 @@
+﻿@model UserViewModel
+
+@{
+    ViewData["Title"] = "UserProfile";
+}
+
+<h2>Пользователь @Model.User.UserName</h2>
+
+<form asp-controller="User" asp-action="UpdateUser" method="post" class="form-horizontal">
+    @Html.HiddenFor(m => m.User.Id)
+    @Html.HiddenFor(m => m.CurrentUserRole.Id)
+    <div class="form-group">
+        <label asp-for="Roles" class="control-label col-md-2"></label>
+        <div class="col-md-10">
+            @Html.DropDownListFor(m => m.SelectedRoleId, Model.Roles, new {@class = "form-control"})
+        </div>
+    </div>
+    <div class="col-md-12">
+        <input type="submit" class="btn btn-success" value="Сохранить"/>
+        <a asp-controller="User" asp-action="GetAllUsers" class="btn btn-danger">Отменить</a>
+    </div>
+</form>
