@@ -4,10 +4,10 @@
 
 <form asp-controller="Patient" asp-action="CreatePatient" method="post" name="patientCreate">
     <div class="form-horizontal">
-       <partial name="../Shared/_PatientPartial.cshtml" model="@Model" />
+        @Html.EditorFor(m => m, "../Shared/_PatientPartial.cshtml")
         <div class="col-md-12">
-            <input type="submit" class="btn btn-success" value="Сохранить" />
-            @Html.ActionLink("Отменить", "Patients", "Patient", null, new { @class = "btn btn-danger" })
+            <input type="submit" class="btn btn-success" value="Сохранить"/>
+            @Html.ActionLink("Отменить", "Patients", "Patient", null, new {@class = "btn btn-danger"})
         </div>
     </div>
 </form>

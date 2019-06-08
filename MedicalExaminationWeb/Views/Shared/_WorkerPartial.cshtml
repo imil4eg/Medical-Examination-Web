@@ -1,0 +1,9 @@
+﻿@model WorkerViewModel
+
+@Html.EditorFor(m => m.Person, "../Shared/_PersonPartial.cshtml")
+<div class="form-group">
+    <label asp-for="@Model.PositionsList" class="control-label col-md-2"></label>
+    <div class="col-md-10">
+        @Html.DropDownListFor(m => m.SelectedPosition, Model.PositionsList, new { @class = "form-control" })
+    </div>
+</div>

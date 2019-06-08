@@ -124,6 +124,7 @@ namespace MedicalExaminationWeb.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult UpdatePatient(PatientViewModel model)
         {
             if (!ModelState.IsValid)

@@ -6,9 +6,12 @@
 
 <h2>@string.Format("{0} {1}", Model.Person.FirstName, Model.Person.LastName)</h2>
 
+
 <form asp-controller="Patient" asp-action="UpdatePatient" method="post">
+    @Html.AntiForgeryToken()
     <div class="form-horizontal">
-        <partial name="../Shared/_PatientPartial.cshtml" model="@Model"/>
+        @Html.EditorFor(m => m, "../Shared/_PatientPartial.cshtml")
+        @*<partial name="../Shared/_PatientPartial.cshtml" model="@Model" />*@
         <a asp-controller="Appointment" asp-action="CreateAppointment" asp-route-patientId="@Model.PersonId" class="btn btn-success">Создать случай</a>
         <hr/>
         <table class="table table-bordered">
@@ -37,4 +40,3 @@
         </div>
     </div>
 </form>
-

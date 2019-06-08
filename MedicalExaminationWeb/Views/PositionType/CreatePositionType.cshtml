@@ -8,9 +8,9 @@
 
 <form asp-controller="PositionType" asp-action="CreatePositionType" method="post">
     <div class="form-horizontal">
-        @*<partial name="../Shared/_PositionTypePartial.cshtml" model="@Model"/>*@ @{ await Html.RenderPartialAsync("_PositionTypePartial", @Model); }
+        @Html.EditorFor(m => m, "../Shared/_PositionTypePartial.cshtml")
         <div class="col-md-12">
-            <input type="submit" class="btn btn-success" value="Сохранить" />
+            <input type="submit" class="btn btn-success" value="Сохранить"/>
             <a asp-controller="PositionType" asp-action="GetPositionTypes" class="btn btn-danger">Отменить</a>
         </div>
     </div>

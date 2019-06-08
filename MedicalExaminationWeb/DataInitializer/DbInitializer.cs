@@ -94,6 +94,18 @@ namespace MedicalExaminationWeb
             _context.Workers.Add(worker);
 
             _context.SaveChanges();
+
+            var positionType = _context.PositionTypes.AsEnumerable().First();
+
+            var position = new Position
+            {
+                PositionId = positionType.Id,
+                WorkerId = worker.PersonId
+            };
+
+            _context.Positions.Add(position);
+
+            _context.SaveChanges();
         }
 
         private void InitDiseaseOutcomeTypes()
@@ -115,12 +127,19 @@ namespace MedicalExaminationWeb
             if(_context.PositionTypes.Any())
                 return;
 
-            var positionType = new PositionType
+            var positionTypes = new List<PositionType>
             {
-                Name = "Хирург"
+                new PositionType
+                {
+                    Name = "Врач-терапевт"
+                },
+                new PositionType
+                {
+                    Name = "Лаборант"
+                }
             };
 
-            _context.PositionTypes.Add(positionType);
+            _context.PositionTypes.AddRange(positionTypes);
 
             _context.SaveChanges();
         }
@@ -178,11 +197,17 @@ namespace MedicalExaminationWeb
             var createdWorker = _context.Workers.Add(worker);
             _context.SaveChanges();
 
-            //var position = new Position
-            //    { PositionId = new Guid("361A9CE3-F531-4D9B-9B95-08D6A4A5A29B"), WorkerId = worker.PersonId };
-            //
-            //_context.Positions.Add(position);
-            //_context.SaveChanges();
+            var positionType = _context.PositionTypes.AsEnumerable().First();
+
+            var position = new Position
+            {
+                PositionId = positionType.Id,
+                WorkerId = worker.PersonId
+            };
+
+            _context.Positions.Add(position);
+
+            _context.SaveChanges();
 
             var testUser = new ApplicationUser
             {
@@ -357,15 +382,92 @@ namespace MedicalExaminationWeb
             if(_context.ServiceTypes.Any())
                 return;
 
-            var textReader = new TextReader();
-            string mkbCodes = textReader.Read(@"\Resources\mkb-codes.txt");
+            var serviceTypes = new List<ServiceType>
+            {
 
-            var serviceTypes = mkbCodes.Split('\n').Where(l => !string.IsNullOrEmpty(l.Split(',')[2]))
-                .Select(l => new ServiceType
-                    {Code = l.Split(',')[2].Replace("\"", ""), Name = l.Split(',')[3].Replace("\"","") });
+                new ServiceType
+                {
+                    AgeRange = "21-99",
+                    Gender = MedicalExamination.Entities.GenderOfService.Both,
+                    IsIncluded = true,
+                    Name = "Измерение артериального давления",
+                    Periodicity = MedicalExamination.Entities.ProcedurePeriodicity.EachYear
+                },
+                new ServiceType
+                {
+                    Name = "Экспресс-анализ на общий уровень холестерина в крови",
+                    IsIncluded = true,
+                    Periodicity = MedicalExamination.Entities.ProcedurePeriodicity.EachYear,
+                    AgeRange = "21-99",
+                    Gender = MedicalExamination.Entities.GenderOfService.Both
+                },
 
+                new ServiceType
+                {
+                    Name = "Определение уровня глюкозы",
+                    AgeRange = "21-99",
+                    Periodicity = MedicalExamination.Entities.ProcedurePeriodicity.EachYear,
+                    IsIncluded = true
+                },
+
+                new ServiceType
+                {
+                    Name = "Исследование на скрытую кровь в кале",
+                    AgeRange = "21-99",
+                    Gender = MedicalExamination.Entities.GenderOfService.Both,
+                    Periodicity = MedicalExamination.Entities.ProcedurePeriodicity.OddAges,
+                    IsIncluded = true
+                },
+
+                new ServiceType
+                {
+                    Gender = MedicalExamination.Entities.GenderOfService.Male,
+                    IsIncluded = true,
+                    Periodicity = MedicalExamination.Entities.ProcedurePeriodicity.EachYear,
+                    AgeRange = "21-99",
+                    Name = "Анализ на уровень простатспецифического антигена"
+                },
+
+                new ServiceType
+                {
+                    AgeRange = "39-48",
+                    IsIncluded = true,
+                    Name = "Маммография до 50",
+                    Periodicity = MedicalExamination.Entities.ProcedurePeriodicity.OnceAtThreeYears,
+                    Gender = MedicalExamination.Entities.GenderOfService.Female
+                },
+
+                new ServiceType
+                {
+                    Name = "Маммография после 50",
+                    IsIncluded = true,
+                    Gender = MedicalExamination.Entities.GenderOfService.Female,
+                    Periodicity = MedicalExamination.Entities.ProcedurePeriodicity.OddAges,
+                    AgeRange = "50-99",
+                },
+
+                new ServiceType
+                {
+                    Name = "Определение абсолютного риска сердечно-сосудистых заболеваний",
+                    AgeRange = "21-63",
+                    Gender = MedicalExamination.Entities.GenderOfService.Both,
+                    Periodicity = MedicalExamination.Entities.ProcedurePeriodicity.EachYear,
+                    IsIncluded = true
+                }
+            };
+            
             _context.ServiceTypes.AddRange(serviceTypes);
             _context.SaveChanges();
+
+            //var textReader = new TextReader();
+            //string mkbCodes = textReader.Read(@"\Resources\mkb-codes.txt");
+            //
+            //var serviceTypes = mkbCodes.Split('\n').Where(l => !string.IsNullOrEmpty(l.Split(',')[2]))
+            //    .Select(l => new ServiceType
+            //        {Code = l.Split(',')[2].Replace("\"", ""), Name = l.Split(',')[3].Replace("\"","") });
+            //
+            //_context.ServiceTypes.AddRange(serviceTypes);
+            //_context.SaveChanges();
         }
     }
 }

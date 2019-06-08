@@ -22,7 +22,7 @@ namespace MedicalExaminationWeb
 
         public string Description { get; set; }
 
-        [DisplayName("Рабочий")]
+        [DisplayName("Врач")]
         public SelectList Workers { get; set; }
         public int WorkerId { get; set; }
     }

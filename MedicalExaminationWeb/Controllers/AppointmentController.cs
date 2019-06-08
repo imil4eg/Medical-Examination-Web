@@ -72,11 +72,18 @@ namespace MedicalExaminationWeb.Controllers
                 workerModels[i].PersonId = workers[i].PersonId;
             }
 
+            appointmentViewModel.Workers = new SelectList(workerModels, "PersonId", "FullName");
+            appointmentViewModel.WorkerId = appointment.Worker.PersonId;
+
             appointmentViewModel.ServicesResults = appointment.ServicesResults.Select(serviceType => new ServiceResultViewModel
             {
                 Service = SimpleMapper.Mapper.Map<ServiceResultModel, ServiceViewModel>(serviceType),
                 ServiceTypeId = serviceType.Id,
-                Workers = new SelectList(workerModels, "PersonId", "FullName", workerModels[0].PersonId)
+                Result = serviceType.Result,
+                TubeNumber = serviceType.TubeNumber,
+                AppointmentId = appointmentId,
+                Workers = new SelectList(workerModels, "PersonId", "FullName", workerModels[0].PersonId),
+                WorkerId = serviceType.WorkerId
             }).ToList();
 
             appointmentViewModel.QuestionnaireTill75 = new QuestionnaireTill75ViewModel

@@ -11,7 +11,7 @@
     
     @Html.AntiForgeryToken()
     <div class="form-horizontal">
-        <partial name="../Shared/_ServiceTypePartial.cshtml" model="@Model"/>
+        @Html.EditorFor(m => m, "../Shared/_ServiceTypePartial.cshtml")
         <hr/>
         <div class="col-md-12">
             <input type="submit" class="btn btn-success" value="Сохранить изменения"/>
