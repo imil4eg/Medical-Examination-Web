@@ -4,14 +4,16 @@ using MedicalExamination.DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace MedicalExaminationWeb.Migrations
 {
     [DbContext(typeof(MedicalExaminationContext))]
-    partial class MedicalExaminationContextModelSnapshot : ModelSnapshot
+    [Migration("20190608104125_ChangesQuestionarieAnswersTypeToInt")]
+    partial class ChangesQuestionarieAnswersTypeToInt
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -362,85 +364,85 @@ namespace MedicalExaminationWeb.Migrations
                 {
                     b.Property<Guid>("AppointmentId");
 
-                    b.Property<bool>("QuestionEight");
+                    b.Property<int>("QuestionEight");
 
-                    b.Property<bool>("QuestionEighteen");
+                    b.Property<int>("QuestionEighteen");
 
-                    b.Property<bool>("QuestionEleven");
+                    b.Property<int>("QuestionEleven");
 
-                    b.Property<bool>("QuestionFifteen");
+                    b.Property<int>("QuestionFifteen");
 
-                    b.Property<bool>("QuestionFive");
+                    b.Property<int>("QuestionFive");
 
-                    b.Property<bool>("QuestionFour");
+                    b.Property<int>("QuestionFour");
 
-                    b.Property<bool>("QuestionFourteen");
+                    b.Property<int>("QuestionFourteen");
 
-                    b.Property<bool>("QuestionNine");
+                    b.Property<int>("QuestionNine");
 
-                    b.Property<bool>("QuestionNineteen");
+                    b.Property<int>("QuestionNineteen");
 
-                    b.Property<bool>("QuestionOneEight");
+                    b.Property<int>("QuestionOneEight");
 
-                    b.Property<bool>("QuestionOneFive");
+                    b.Property<int>("QuestionOneFive");
 
-                    b.Property<bool>("QuestionOneFour");
+                    b.Property<int>("QuestionOneFour");
 
-                    b.Property<bool>("QuestionOneNine");
+                    b.Property<int>("QuestionOneNine");
 
                     b.Property<string>("QuestionOneNineOne");
 
-                    b.Property<bool>("QuestionOneOne");
+                    b.Property<int>("QuestionOneOne");
 
-                    b.Property<bool>("QuestionOneOneOne");
+                    b.Property<int>("QuestionOneOneOne");
 
-                    b.Property<bool>("QuestionOneSeven");
+                    b.Property<int>("QuestionOneSeven");
 
-                    b.Property<bool>("QuestionOneSix");
+                    b.Property<int>("QuestionOneSix");
 
-                    b.Property<bool>("QuestionOneSixOne");
+                    b.Property<int>("QuestionOneSixOne");
 
-                    b.Property<bool>("QuestionOneTen");
+                    b.Property<int>("QuestionOneTen");
 
-                    b.Property<bool>("QuestionOneTenOne");
+                    b.Property<int>("QuestionOneTenOne");
 
-                    b.Property<bool>("QuestionOneThree");
+                    b.Property<int>("QuestionOneThree");
 
-                    b.Property<bool>("QuestionOneTwo");
+                    b.Property<int>("QuestionOneTwo");
 
                     b.Property<int>("QuestionSeven");
 
-                    b.Property<bool>("QuestionSeventeen");
+                    b.Property<int>("QuestionSeventeen");
 
-                    b.Property<bool>("QuestionSix");
+                    b.Property<int>("QuestionSix");
 
-                    b.Property<bool>("QuestionSixteen");
+                    b.Property<int>("QuestionSixteen");
 
-                    b.Property<bool>("QuestionTen");
+                    b.Property<int>("QuestionTen");
 
-                    b.Property<bool>("QuestionThirteen");
+                    b.Property<int>("QuestionThirteen");
 
-                    b.Property<bool>("QuestionThree");
+                    b.Property<int>("QuestionThree");
 
-                    b.Property<bool>("QuestionTwelve");
+                    b.Property<int>("QuestionTwelve");
 
                     b.Property<int>("QuestionTwenty");
 
                     b.Property<int>("QuestionTwentyFive");
 
-                    b.Property<bool>("QuestionTwentyFour");
+                    b.Property<int>("QuestionTwentyFour");
 
-                    b.Property<bool>("QuestionTwentyOne");
+                    b.Property<int>("QuestionTwentyOne");
 
                     b.Property<int>("QuestionTwentySeven");
 
                     b.Property<int>("QuestionTwentySix");
 
-                    b.Property<bool>("QuestionTwentyThree");
+                    b.Property<int>("QuestionTwentyThree");
 
-                    b.Property<bool>("QuestionTwentyTwo");
+                    b.Property<int>("QuestionTwentyTwo");
 
-                    b.Property<bool>("QuestionTwo");
+                    b.Property<int>("QuestionTwo");
 
                     b.HasKey("AppointmentId");
 

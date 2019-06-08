@@ -130,5 +130,7 @@ namespace MedicalExaminationWeb
         [DisplayName("27. Как часто Вы употребляете за один раз 6 или более порций?")]
         public SelectList QuestionTwentySix { get; set; }
         public int SelectedQuestionTwentySixAnswer { get; set; }
+
+        public SelectList DefaultAnswerList { get; set; }
     }
 }

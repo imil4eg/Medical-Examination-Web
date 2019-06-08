@@ -22,6 +22,7 @@ namespace MedicalExamination.BLL
         private readonly IServiceResultService _serviceResultService;
         private readonly IDiseaseOutcomeTypeService _diseaseOutcomeTypeService;
         private readonly IPatientService _patientService;
+        private readonly IQuestionnaireTill75Service _questionnaireTill75Service;
 
         public AppointmentService(IGenericRepository<Appointment> appointmentRepository,
             IGenericRepository<QuestionnaireAfter75> questionnaireAfter75Repository,
@@ -31,7 +32,8 @@ namespace MedicalExamination.BLL
             IDiseaseOutcomeTypeService diseaseOutcomeTypeService,
             IPatientService patientService,
             IGenericRepository<Patient> patientRepository,
-            IGenericRepository<Worker> workerRepository)
+            IGenericRepository<Worker> workerRepository,
+            IQuestionnaireTill75Service questionnaireTill75Service)
         {
             _appointmentRepository = appointmentRepository;
             this._questionnaireAfter75Repository = questionnaireAfter75Repository;
@@ -44,6 +46,7 @@ namespace MedicalExamination.BLL
             _patientService = patientService;
             _patientRepository = patientRepository;
             _workerRepository = workerRepository;
+            _questionnaireTill75Service = questionnaireTill75Service;
         }
 
         // TODO: realize logic of appointment
@@ -126,6 +129,24 @@ namespace MedicalExamination.BLL
 
         public void UpdateAppointment(AppointmentModel appointmentModel)
         {
+            var appointment = _appointmentRepository.GetById(appointmentModel.Id);
+            appointment.DiseaseOutcomeTypeId = appointmentModel.Outcome.Id;
+            appointment.EndDate = appointmentModel.EndDate;
+            appointment.WorkerId = appointmentModel.Worker.PersonId;
+
+            _appointmentRepository.Update(appointment);
+
+            foreach (var serviceResultModel in appointmentModel.ServicesResults)
+            {
+                _serviceResultService.UpdateServiceResult(serviceResultModel);
+            }
+
+            appointmentModel.QuestionnaireTill75.AppointmentId = appointment.Id;
+
+            _questionnaireTill75Service.UpdateQuestionnaire(appointmentModel.QuestionnaireTill75);
+
+            //_questionnaireTill75Repository.Update(appointmentModel.QuestionnaireTill75);
+
             //_appointmentRepository.Update(appointment);
         }
 

@@ -41,7 +41,12 @@ namespace MedicalExamination.BLL
 
         public void UpdateServiceResult(ServiceResultModel serviceResultModel)
         {
-            var serviceResult = SimpleMapper.Mapper.Map<ServiceResultModel, ServiceResult>(serviceResultModel);
+            var serviceResult = _serviceResultRepository.GetById(serviceResultModel.Id);
+            serviceResult.Result = serviceResultModel.Result;
+            serviceResult.TubeNumber = serviceResultModel.TubeNumber;
+            serviceResult.WorkerId = serviceResultModel.WorkerId;
+
+            //var serviceResult = SimpleMapper.Mapper.Map<ServiceResultModel, ServiceResult>(serviceResultModel);
 
             _serviceResultRepository.Update(serviceResult);
         }

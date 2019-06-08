@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using MedicalExamination.BLL;
 using MedicalExamination.Entities;
@@ -16,16 +15,19 @@ namespace MedicalExaminationWeb.Controllers
         private readonly IWorkerService _workerService;
         private readonly IServiceTypeService _serviceTypeService;
         private readonly IDiseaseOutcomeTypeService _diseaseOutcomeTypeService;
+        private readonly IQuestionnaireTill75Service _questionnaireTill75Service;
 
         public AppointmentController(IAppointmentService appointmentService, IPatientService patientService,
             IWorkerService workerService, IServiceTypeService serviceTypeService,
-            IDiseaseOutcomeTypeService diseaseOutcomeTypeService)
+            IDiseaseOutcomeTypeService diseaseOutcomeTypeService,
+            IQuestionnaireTill75Service questionnaireTill75Service)
         {
             _appointmentService = appointmentService;
             _patientService = patientService;
             _workerService = workerService;
             _serviceTypeService = serviceTypeService;
             _diseaseOutcomeTypeService = diseaseOutcomeTypeService;
+            _questionnaireTill75Service = questionnaireTill75Service;
         }
 
         [HttpGet]
@@ -77,6 +79,7 @@ namespace MedicalExaminationWeb.Controllers
 
             appointmentViewModel.ServicesResults = appointment.ServicesResults.Select(serviceType => new ServiceResultViewModel
             {
+                Id = serviceType.Id,
                 Service = SimpleMapper.Mapper.Map<ServiceResultModel, ServiceViewModel>(serviceType),
                 ServiceTypeId = serviceType.Id,
                 Result = serviceType.Result,
@@ -86,14 +89,30 @@ namespace MedicalExaminationWeb.Controllers
                 WorkerId = serviceType.WorkerId
             }).ToList();
 
-            appointmentViewModel.QuestionnaireTill75 = new QuestionnaireTill75ViewModel
-            {
-                QuestionSeven = EnumDisplayNamePicker.GetDisplayNames(typeof(QuestionSevenAnswers)),
-                QuestionTwentyOne = EnumDisplayNamePicker.GetDisplayNames(typeof(QuestionTwentyOneAnswers)),
-                QuestionTwentyFive = EnumDisplayNamePicker.GetDisplayNames(typeof(QuestionTwentyFiveAnswers)),
-                QuestionTwentySix = EnumDisplayNamePicker.GetDisplayNames(typeof(QuestionTwentySixAnswers)),
-                QuestionTwentySeven = EnumDisplayNamePicker.GetDisplayNames(typeof(QuestionTwentySevenAnswers))
-            };
+            appointmentViewModel.QuestionnaireTill75.QuestionSeven =
+                EnumDisplayNamePicker.GetDisplayNames(typeof(QuestionSevenAnswers));
+            appointmentViewModel.QuestionnaireTill75.SelectedQuestionSevenAnswer =
+                (int)appointment.QuestionnaireTill75.QuestionSeven;
+
+            appointmentViewModel.QuestionnaireTill75.QuestionTwentyOne =
+                EnumDisplayNamePicker.GetDisplayNames(typeof(QuestionTwentyOneAnswers));
+            appointmentViewModel.QuestionnaireTill75.SelectedQuestionTwentyOneAnswer =
+                appointment.QuestionnaireTill75.QuestionTwentyOne ? 1 : 0;
+
+            appointmentViewModel.QuestionnaireTill75.QuestionTwentyFive =
+                EnumDisplayNamePicker.GetDisplayNames(typeof(QuestionTwentyFiveAnswers));
+            appointmentViewModel.QuestionnaireTill75.SelectedQuestionTwentyFiveAnswer =
+                (int) appointment.QuestionnaireTill75.QuestionTwentyFive;
+
+            appointmentViewModel.QuestionnaireTill75.QuestionTwentySix =
+                EnumDisplayNamePicker.GetDisplayNames(typeof(QuestionTwentySixAnswers));
+            appointmentViewModel.QuestionnaireTill75.SelectedQuestionTwentySixAnswer =
+                (int) appointment.QuestionnaireTill75.QuestionTwentySix;
+
+            appointmentViewModel.QuestionnaireTill75.QuestionTwentySeven =
+                EnumDisplayNamePicker.GetDisplayNames(typeof(QuestionTwentySevenAnswers));
+            appointmentViewModel.QuestionnaireTill75.SelectedQuestionTwentySevenAnswer =
+                (int) appointment.QuestionnaireTill75.QuestionTwentySeven;
 
             return View("Appointment", appointmentViewModel);
         }
@@ -111,7 +130,7 @@ namespace MedicalExaminationWeb.Controllers
             appointmentModel.Patient = patientModel;
 
             var outcomes = _diseaseOutcomeTypeService.GetAllDiseaseOutcomeTypes();
-            appointmentModel.Outcomes  = new SelectList(outcomes, "Id", "Name");
+            appointmentModel.Outcomes = new SelectList(outcomes, "Id", "Name");
             appointmentModel.OutcomeId = outcomes.First().Id;
 
             var workers = _workerService.GetAllWorkers().ToArray();
@@ -130,7 +149,8 @@ namespace MedicalExaminationWeb.Controllers
             appointmentModel.WorkerId = workerModels[0].PersonId;
 
             var serviceTypes =
-                _serviceTypeService.GetAllServicesForPerson((int) patientModel.Person.Gender, patientModel.Person.BirthDate)
+                _serviceTypeService
+                    .GetAllServicesForPerson((int) patientModel.Person.Gender, patientModel.Person.BirthDate)
                     .Map<ServiceTypeModel, ServiceViewModel>();
 
             var serviceResults = serviceTypes.Select(serviceType => new ServiceResultViewModel
@@ -141,15 +161,15 @@ namespace MedicalExaminationWeb.Controllers
 
             appointmentModel.ServicesResults = serviceResults;
 
-                appointmentModel.QuestionnaireTill75 = new QuestionnaireTill75ViewModel
-                {
-                    QuestionSeven = EnumDisplayNamePicker.GetDisplayNames(typeof(QuestionSevenAnswers)),
-                    QuestionTwentyOne = EnumDisplayNamePicker.GetDisplayNames(typeof(QuestionTwentyOneAnswers)),
-                    QuestionTwentyFive = EnumDisplayNamePicker.GetDisplayNames(typeof(QuestionTwentyFiveAnswers)),
-                    QuestionTwentySix = EnumDisplayNamePicker.GetDisplayNames(typeof(QuestionTwentySixAnswers)),
-                    QuestionTwentySeven = EnumDisplayNamePicker.GetDisplayNames(typeof(QuestionTwentySevenAnswers))
-                };
-            
+            appointmentModel.QuestionnaireTill75 = new QuestionnaireTill75ViewModel
+            {
+                QuestionSeven = EnumDisplayNamePicker.GetDisplayNames(typeof(QuestionSevenAnswers)),
+                QuestionTwentyOne = EnumDisplayNamePicker.GetDisplayNames(typeof(QuestionTwentyOneAnswers)),
+                QuestionTwentyFive = EnumDisplayNamePicker.GetDisplayNames(typeof(QuestionTwentyFiveAnswers)),
+                QuestionTwentySix = EnumDisplayNamePicker.GetDisplayNames(typeof(QuestionTwentySixAnswers)),
+                QuestionTwentySeven = EnumDisplayNamePicker.GetDisplayNames(typeof(QuestionTwentySevenAnswers))
+            };
+
 
             return View(appointmentModel);
         }
@@ -164,48 +184,72 @@ namespace MedicalExaminationWeb.Controllers
             appointment.Worker = new WorkerModel {PersonId = model.WorkerId};
             appointment.ServicesResults = model.ServicesResults.Select(sr =>
                 SimpleMapper.Mapper.Map<ServiceResultViewModel, MedicalExamination.BLL.ServiceResultModel>(sr));    
+
             appointment.QuestionnaireTill75 =
                 SimpleMapper.Mapper.Map<QuestionnaireTill75ViewModel, QuestionnaireTill75>(model.QuestionnaireTill75);
+            appointment.QuestionnaireTill75.QuestionSeven =
+                (MedicalExamination.Entities.QuestionSevenAnswers) model.QuestionnaireTill75
+                    .SelectedQuestionSevenAnswer;
+
+            appointment.QuestionnaireTill75.QuestionTwentyOne =
+                model.QuestionnaireTill75.SelectedQuestionTwentyOneAnswer == 1 ? true : false;
+
+            appointment.QuestionnaireTill75.QuestionTwentyFive =
+                (MedicalExamination.Entities.QuestionTwentyFiveAnswers) model
+                    .QuestionnaireTill75.SelectedQuestionTwentyFiveAnswer;
+
+            appointment.QuestionnaireTill75.QuestionTwentySix =
+                (MedicalExamination.Entities.QuestionTwentySixAnswers) model
+                    .QuestionnaireTill75.SelectedQuestionTwentySixAnswer;
+
+            appointment.QuestionnaireTill75.QuestionTwentySeven =
+                (MedicalExamination.QuestionTwentySevenAnswers) model.QuestionnaireTill75
+                    .SelectedQuestionTwentySevenAnswer;
 
             appointment.Outcome = new MedicalExamination.BLL.DiseaseOutcomeModel {Id = model.OutcomeId};
             appointment.Worker = new WorkerModel {PersonId = model.WorkerId};
 
             this._appointmentService.CreateAppointment(appointment);
 
-            return Ok();
+            return Json(Url.Action("GetPatient", "Patient", new { patientId = model.Patient.PersonId }));
         }
 
-        [HttpPut]
+        [HttpPost]
         public ActionResult UpdateAppointment(AppointmentViewModel model)
         {
-            try
-            {
-                var appointment =
-                    SimpleMapper.Mapper.Map<AppointmentViewModel, MedicalExamination.BLL.AppointmentModel>(model);
-                appointment.Patient =
-                    SimpleMapper.Mapper.Map<PatientViewModel, MedicalExamination.BLL.PatientModel>(model.Patient);
-                appointment.Worker =
-                    SimpleMapper.Mapper.Map<WorkerViewModel, MedicalExamination.BLL.WorkerModel>(model.Worker);
-                appointment.ServicesResults = model.ServicesResults.Select(sr =>
-                    SimpleMapper.Mapper.Map<ServiceResultViewModel, MedicalExamination.BLL.ServiceResultModel>(sr));
+            var appointment = SimpleMapper.Mapper.Map<AppointmentViewModel, AppointmentModel>(model);
+            appointment.Patient = SimpleMapper.Mapper.Map<PatientViewModel, PatientModel>(model.Patient);
+            appointment.Worker = new WorkerModel {PersonId = model.WorkerId};
+            appointment.ServicesResults = model.ServicesResults.Select(sr =>
+                SimpleMapper.Mapper.Map<ServiceResultViewModel, ServiceResultModel>(sr));
 
-                if (model.QuestionnaireAfter75 != null)
-                {
-                    appointment.QuestionnaireAfter75 = model.QuestionnaireAfter75;
-                }
-                else
-                {
-                    //appointment.QuestionnaireTill75 = model.QuestionnaireTill75;
-                }
+            appointment.QuestionnaireTill75 =
+                SimpleMapper.Mapper.Map<QuestionnaireTill75ViewModel, QuestionnaireTill75>(model.QuestionnaireTill75);
+            appointment.QuestionnaireTill75.QuestionSeven =
+                (MedicalExamination.Entities.QuestionSevenAnswers)model.QuestionnaireTill75
+                    .SelectedQuestionSevenAnswer;
 
-                this._appointmentService.UpdateAppointment(appointment);
+            appointment.QuestionnaireTill75.QuestionTwentyOne =
+                model.QuestionnaireTill75.SelectedQuestionTwentyOneAnswer == 1 ? true : false;
 
-                return Ok();
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            appointment.QuestionnaireTill75.QuestionTwentyFive =
+                (MedicalExamination.Entities.QuestionTwentyFiveAnswers)model
+                    .QuestionnaireTill75.SelectedQuestionTwentyFiveAnswer;
+
+            appointment.QuestionnaireTill75.QuestionTwentySix =
+                (MedicalExamination.Entities.QuestionTwentySixAnswers)model
+                    .QuestionnaireTill75.SelectedQuestionTwentySixAnswer;
+
+            appointment.QuestionnaireTill75.QuestionTwentySeven =
+                (MedicalExamination.QuestionTwentySevenAnswers)model.QuestionnaireTill75
+                    .SelectedQuestionTwentySevenAnswer;
+
+            appointment.Outcome = new MedicalExamination.BLL.DiseaseOutcomeModel {Id = model.OutcomeId};
+            appointment.Worker = new WorkerModel {PersonId = model.WorkerId};
+
+            this._appointmentService.UpdateAppointment(appointment);
+
+            return Json(Url.Action("GetPatient","Patient", new { patientId = appointment.Patient.PersonId}));
         }
 
         [HttpDelete]
