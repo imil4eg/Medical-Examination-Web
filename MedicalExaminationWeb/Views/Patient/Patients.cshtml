@@ -1,4 +1,5 @@
-﻿@model IEnumerable<PatientViewModel>
+﻿@using System.Globalization
+@model IEnumerable<PatientViewModel>
 
 @{
     ViewData["Title"] = "Patients";
@@ -26,7 +27,7 @@
                     <td>@patient.Person.FirstName</td>
                     <td>@patient.Person.MiddleName</td>
                     <td>@patient.Person.Gender</td>
-                    <td>@patient.Person.BirthDate.Date.ToString("dd MMMM yyyy")</td>
+                    <td>@patient.Person.BirthDate.Date.ToString("dd MMMM yyyy",new CultureInfo("ru-RU"))</td>
                     <td><a asp-controller="Patient" asp-action="GetPatient" asp-route-patientId="@patient.PersonId" class="btn btn-primary">Показать</a></td>
                     <td><a asp-controller="Patient" asp-action="DeletePatient" asp-route-patientId="@patient.PersonId" class="btn btn-danger">Удалить</a></td>
                 </tr>
