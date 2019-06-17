@@ -22,7 +22,7 @@ namespace MedicalExaminationWeb
                 var roleManager = services.GetRequiredService<RoleManager<ApplicationRole>>();
 
                 var dbInitializer = new DbInitializer(context, userManager, roleManager);
-                dbInitializer.Initialize().Wait();
+               dbInitializer.Initialize().Wait();
             }
 
             host.Run();

@@ -89,38 +89,41 @@ namespace MedicalExamination.BLL
 
         public void CreateAppointment(AppointmentModel appointmentModel)
         {
-            var appointment = new Appointment{Id = Guid.NewGuid()};
+            var appointment = new Appointment {Id = Guid.NewGuid()};
 
             appointment.Patient = _patientRepository.GetById(appointmentModel.Patient.PersonId);
             appointment.PatientId = appointment.Patient.PersonId;
 
             appointment.Worker = _workerRepository.GetById(appointmentModel.Worker.PersonId);
             appointment.WorkerId = appointment.Worker.PersonId;
-            
+
             //appointment.PatientId = appointmentModel.Patient.PersonId;
-            appointment.EndDate = DateTime.Today;//appointmentModel.EndDate;
+            appointment.EndDate = DateTime.Today; //appointmentModel.EndDate;
             //appointment.ExaminationResultId = appointmentModel.ExaminationResult.Id;
             appointment.DiseaseOutcomeTypeId = appointmentModel.Outcome.Id;
             //appointment.WorkerId = appointmentModel.Worker.PersonId;
 
             Appointment createdAppointment = _appointmentRepository.Insert(appointment);
 
-                QuestionnaireTill75 questionnaireTill75 = appointmentModel.QuestionnaireTill75;
-                questionnaireTill75.AppointmentId = createdAppointment.Id;
+            QuestionnaireTill75 questionnaireTill75 = appointmentModel.QuestionnaireTill75;
+            questionnaireTill75.AppointmentId = createdAppointment.Id;
 
-                this._questionnaireTill75Repository.Insert(questionnaireTill75);
+            this._questionnaireTill75Repository.Insert(questionnaireTill75);
+
+            if(appointmentModel.ServicesResults == null)
+                return;
 
             var examinationResults = (from appointmentModelServicesResult in appointmentModel.ServicesResults
-            let worker = _workerRepository.GetById(appointmentModelServicesResult.WorkerId)
-            select new ServiceResult
-            {
-                AppointmentId = createdAppointment.Id,
-                ServiceTypeId = appointmentModelServicesResult.ServiceTypeId,
-                Result = appointmentModelServicesResult.Result,
-                TubeNumber = appointmentModelServicesResult.TubeNumber,
-                WorkerId = worker.PersonId,
-                Worker = worker
-            }).ToList();
+                let worker = _workerRepository.GetById(appointmentModelServicesResult.WorkerId)
+                select new ServiceResult
+                {
+                    AppointmentId = createdAppointment.Id,
+                    ServiceTypeId = appointmentModelServicesResult.ServiceTypeId,
+                    Result = appointmentModelServicesResult.Result,
+                    TubeNumber = appointmentModelServicesResult.TubeNumber,
+                    WorkerId = worker.PersonId,
+                    Worker = worker
+                }).ToList();
 
             //var examinationResults = appointmentModel.ServicesResults.Select(serviceResult =>
             //    new ServiceResult

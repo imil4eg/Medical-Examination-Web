@@ -24,7 +24,7 @@ namespace MedicalExaminationWeb.Controllers
 
         public IActionResult Contact()
         {
-            ViewData["Message"] = "Your contact page.";
+            ViewData["Message"] = "Контакты";
 
             return View();
         }

@@ -4,7 +4,7 @@
 @Html.HiddenFor(m => m.Patient.PersonId)
 <div class="row">
     <div class="col-md-12">
-        <a class="btn btn-danger" asp-action="GetPatient" asp-controller="Patient" asp-route-patientId="">Отменить</a>
+        <a class="btn btn-danger" asp-action="GetPatient" asp-controller="Patient" asp-route-patientId="@Model.Patient.PersonId">Отменить</a>
         <input id="postappointment" onclick="post()" type="button" class="btn btn-success" value="Сохранить" />
     </div>
 </div>

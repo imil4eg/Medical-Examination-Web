@@ -41,6 +41,11 @@ namespace MedicalExaminationWeb
             InitPosition();
         }
 
+        private void InitAdmin()
+        {
+
+        }
+
         private void InitPosition()
         {
             if(_context.Positions.Any())

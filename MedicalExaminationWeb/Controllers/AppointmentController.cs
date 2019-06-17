@@ -187,8 +187,10 @@ namespace MedicalExaminationWeb.Controllers
             appointment.Patient =
                 SimpleMapper.Mapper.Map<PatientViewModel, MedicalExamination.BLL.PatientModel>(model.Patient);
             appointment.Worker = new WorkerModel {PersonId = model.WorkerId};
-            appointment.ServicesResults = model.ServicesResults.Select(sr =>
-                SimpleMapper.Mapper.Map<ServiceResultViewModel, MedicalExamination.BLL.ServiceResultModel>(sr));    
+
+            if(model.ServicesResults != null)
+                appointment.ServicesResults = model.ServicesResults.Select(sr =>
+                    SimpleMapper.Mapper.Map<ServiceResultViewModel, MedicalExamination.BLL.ServiceResultModel>(sr));    
 
             appointment.QuestionnaireTill75 =
                 SimpleMapper.Mapper.Map<QuestionnaireTill75ViewModel, QuestionnaireTill75>(model.QuestionnaireTill75);
